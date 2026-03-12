@@ -23,6 +23,11 @@ const SOCIAL_ICONS: Record<string, () => any> = {
 export function PreviewCard({ data, compact = false }: PreviewCardProps) {
   const { t: i18n } = useI18n();
   const activeSocials = Object.entries(data.socials).filter(([, v]) => v.trim());
+  const activeWebsites = data.websites.filter((website) => website.url.trim());
+  const previewItems = [
+    ...activeSocials.map(([key]) => key),
+    ...activeWebsites.map((_, index) => `Website-${index}`),
+  ];
   const template = data.template;
   const theme = THEME_TEMPLATES[template as keyof typeof THEME_TEMPLATES] || THEME_TEMPLATES["Minimal oq"];
 
@@ -56,10 +61,12 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
           {i18n.onboarding.contactButton}
         </div>
 
-        {!compact && activeSocials.length > 0 && (
+        {!compact && previewItems.length > 0 && (
           <div className="flex gap-1.5 mt-2 flex-wrap">
-            {activeSocials.slice(0, 4).map(([key]) => {
-              const Icon = SOCIAL_ICONS[key];
+            {previewItems.map((key) => {
+              const Icon = key.startsWith("Website-")
+                ? Icons.Globe
+                : SOCIAL_ICONS[key];
               return (
                 <div
                   key={key}

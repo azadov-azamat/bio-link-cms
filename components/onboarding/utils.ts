@@ -6,6 +6,7 @@ export interface OnboardingData {
   title: string;
   description: string;
   socials: Record<string, string>;
+  websites: Array<{ name: string; url: string }>;
   workHours: string;
   phone1: string;
   phone2: string;
@@ -31,6 +32,7 @@ export const INITIAL_DATA: OnboardingData = {
   title: "",
   description: "",
   socials: {},
+  websites: [{ name: "", url: "" }],
   workHours: "",
   phone1: "",
   phone2: "",
