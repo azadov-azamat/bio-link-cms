@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "./icons";
@@ -19,9 +19,21 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { locale, setLocale, t } = useI18n();
 
+  const tickingRef = useRef(false);
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => {
+      if (tickingRef.current) return;
+
+      tickingRef.current = true;
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 20);
+        tickingRef.current = false;
+      });
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 

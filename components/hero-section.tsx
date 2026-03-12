@@ -1,44 +1,56 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Icons } from "./icons";
 import { ProfileCard } from "./profile-card";
 import { useI18n } from "./i18n-provider";
 
 export function HeroSection() {
-  const [urlText] = useState("biosahifa.uz");
+  const urlText = "biosahifa.uz";
   const [typed, setTyped] = useState("");
   const { t } = useI18n();
   const phrase = t.hero.typedPhrase;
 
   useEffect(() => {
-    setTyped("");
-    let i = 0;
+    let charIndex = 0;
     let deleting = false;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
-    const interval = setInterval(() => {
-      if (!deleting) {
-        if (i <= phrase.length) {
-          setTyped(phrase.slice(0, i));
-          i++;
-        } else {
-          // 2 soniya kutib o'chirish boshlaydi
-          setTimeout(() => {
-            deleting = true;
-          }, 2000);
-        }
-      } else {
-        if (i > 0) {
-          i--;
-          setTyped(phrase.slice(0, i));
-        } else {
-          deleting = false;
-        }
+    const runTyping = () => {
+      const delay = deleting ? 55 : 90;
+
+      if (!deleting && charIndex <= phrase.length) {
+        setTyped(phrase.slice(0, charIndex));
+        charIndex += 1;
+        timeoutId = setTimeout(runTyping, delay);
+        return;
       }
-    }, 90);
 
-    return () => clearInterval(interval);
+      if (!deleting) {
+        deleting = true;
+        timeoutId = setTimeout(runTyping, 2000);
+        return;
+      }
+
+      if (charIndex > 0) {
+        charIndex -= 1;
+        setTyped(phrase.slice(0, charIndex));
+        timeoutId = setTimeout(runTyping, delay);
+        return;
+      }
+
+      deleting = false;
+      timeoutId = setTimeout(runTyping, 500);
+    };
+
+    runTyping();
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, [phrase]);
 
   return (
