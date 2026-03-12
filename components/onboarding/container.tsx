@@ -3,10 +3,15 @@
 import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "@/components/icons";
-import { INITIAL_DATA, OnboardingData, THEME_TEMPLATES, toSlug } from "@/components/auth/utils";
-import { PreviewCard } from "@/components/auth/preview-card";
-import { Step1 } from "@/components/auth/steps/one";
-import { Step2 } from "@/components/auth/steps/two";
+import {
+  INITIAL_DATA,
+  OnboardingData,
+  THEME_TEMPLATES,
+  toSlug,
+} from "@/components/onboarding/utils";
+import { PreviewCard } from "@/components/onboarding/preview-card";
+import { Step1 } from "@/components/onboarding/steps/one";
+import { Step2 } from "@/components/onboarding/steps/two";
 
 const STEPS = [
   {
