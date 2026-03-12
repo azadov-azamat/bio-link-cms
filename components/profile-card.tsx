@@ -27,7 +27,7 @@ export function ProfileCard({
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={`relative w-[220px] rounded-[28px] overflow-hidden shadow-2xl ${
+      className={`relative w-55 rounded-[28px] overflow-hidden shadow-2xl ${
         theme === 'dark' ? 'bg-zinc-900' : 'bg-white'
       }`}
       style={{ border: theme === 'dark' ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.06)' }}

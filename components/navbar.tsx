@@ -1,94 +1,126 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Icons } from './icons';
 
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false)
+export function Navbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  const navItems = ['Xizmatlar', 'Shablonlar', 'Narxlar', 'FAQ', 'Aloqa']
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollTo = (id: string) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+    setMobileOpen(false);
+  };
+
+  const links = [
+    { label: "Imkoniyatlar", id: "imkoniyatlar" },
+    { label: "Shablonlar", id: "shablonlar" },
+    { label: "Qanday ishlaydi", id: "qanday-ishlaydi" },
+    { label: "FAQ", id: "faq" },
+  ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
-      <nav className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 flex items-center justify-between">
-        {/* Logo */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="flex-shrink-0"
-        >
-          <div className="text-2xl font-bold text-black">
-            Bio<span className="text-gray-600">Sahifa</span>
-          </div>
-        </motion.div>
+    <div className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-3 px-4">
+      <motion.nav
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className={`container rounded-2xl transition-all duration-500 ${
+          scrolled
+            ? "bg-white/95 backdrop-blur-md shadow-lg shadow-zinc-900/8 border border-zinc-200/80"
+            : "bg-white/70 backdrop-blur-sm border border-white/60 shadow-sm"
+        }`}
+      >
+        <div className="px-5 h-14 flex items-center justify-between">
+          {/* Logo */}
+          <button
+            onClick={() => scrollTo("hero")}
+            className="flex items-center gap-2.5"
+          >
+            <Icons.Logo />
+            <span className="text-[16px] font-bold tracking-tight text-zinc-900">
+              BioSahifa
+            </span>
+          </button>
 
-        {/* Desktop Navigation */}
-        <div className="hidden md:flex items-center gap-8">
-          {navItems.map((item, i) => (
-            <motion.a
-              key={item}
-              href="#"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="text-gray-700 hover:text-black font-medium transition-colors"
+          {/* Desktop Nav */}
+          <div className="hidden md:flex items-center gap-0.5">
+            {links.map((l) => (
+              <button
+                key={l.id}
+                onClick={() => scrollTo(l.id)}
+                className="px-3.5 py-2 text-[13.5px] text-zinc-500 hover:text-zinc-900 font-medium rounded-xl hover:bg-zinc-100 transition-all"
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <div className="hidden md:flex items-center gap-2">
+            <button className="px-4 py-2 text-[13.5px] font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all">
+              Kirish
+            </button>
+            <button
+              onClick={() => scrollTo("cta")}
+              className="px-4 py-2 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all shadow-md shadow-zinc-900/15"
             >
-              {item}
-            </motion.a>
-          ))}
+              Boshlash
+            </button>
+          </div>
+
+          {/* Mobile burger */}
+          <button
+            className="md:hidden p-2 rounded-xl hover:bg-zinc-100 transition-colors text-zinc-700"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? <Icons.X /> : <Icons.Menu />}
+          </button>
         </div>
 
-        {/* CTA Button */}
-        <motion.button
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.05 }}
-          className="hidden md:block px-6 py-2.5 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
-        >
-          Boshlash
-        </motion.button>
-
-        {/* Mobile Menu Button */}
-        <button
-          onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden p-2"
-          aria-label="Toggle menu"
-        >
-          {isOpen ? (
-            <X className="w-6 h-6 text-black" />
-          ) : (
-            <Menu className="w-6 h-6 text-black" />
+        {/* Mobile Menu */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden border-t border-zinc-100 rounded-b-2xl"
+            >
+              <div className="px-4 py-3 flex flex-col gap-1">
+                {links.map((l) => (
+                  <button
+                    key={l.id}
+                    onClick={() => scrollTo(l.id)}
+                    className="px-4 py-2.5 text-left text-[14px] font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-50 rounded-xl transition-all"
+                  >
+                    {l.label}
+                  </button>
+                ))}
+                <div className="flex gap-2 pt-3 border-t border-zinc-100 mt-1">
+                  <button className="flex-1 py-2.5 text-[13.5px] font-medium text-zinc-700 border border-zinc-200 rounded-xl hover:bg-zinc-50 transition-all">
+                    Kirish
+                  </button>
+                  <button
+                    onClick={() => scrollTo("cta")}
+                    className="flex-1 py-2.5 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all"
+                  >
+                    Boshlash
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           )}
-        </button>
-      </nav>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden border-t border-gray-200 bg-white"
-          >
-            <div className="px-4 py-4 space-y-3">
-              {navItems.map((item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="block py-2 text-gray-700 hover:text-black font-medium"
-                >
-                  {item}
-                </a>
-              ))}
-              <button className="w-full py-2 bg-black text-white font-semibold rounded-lg mt-4">
-                Boshlash
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
-  )
+        </AnimatePresence>
+      </motion.nav>
+    </div>
+  );
 }
