@@ -230,7 +230,7 @@ export function TemplatesSection() {
         </div>
 
         {/* Cards track */}
-        <div className="relative h-[500px] overflow-visible">
+        <div className="relative h-125 overflow-visible">
           <motion.div
             className="absolute top-0 flex items-center"
             style={{ x, gap: GAP }}
@@ -247,7 +247,7 @@ export function TemplatesSection() {
                   }}
                   transition={{ type: "spring", stiffness: 200, damping: 24 }}
                   style={{ width: CARD_WIDTH, flexShrink: 0 }}
-                  className={`h-[460px] rounded-[32px] overflow-hidden shadow-2xl ${t.bg} ${t.border} flex flex-col`}
+                  className={`h-115 rounded-4xl overflow-hidden shadow-2xl ${t.bg} ${t.border} flex flex-col`}
                 >
                   {/* Phone header bar */}
                   <div
