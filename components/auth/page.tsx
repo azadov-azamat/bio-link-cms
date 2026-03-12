@@ -130,14 +130,16 @@ export function AuthPage({ onAuth }: AuthPageProps) {
                 </div>
               ))}
               <div className="flex gap-1.5 justify-center mt-2">
-                {["📸", "✈️", "▶️"].map((ic) => (
-                  <div
-                    key={ic}
-                    className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[13px]"
-                  >
-                    {ic}
-                  </div>
-                ))}
+                {[Icons.Instagram, Icons.Telegram, Icons.Youtube].map(
+                  (Ic, idx) => (
+                    <div
+                      key={idx}
+                      className="w-7 h-7 rounded-lg bg-zinc-100 flex items-center justify-center text-[13px]"
+                    >
+                      <Ic />
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           </div>

@@ -316,4 +316,153 @@ export const Icons = {
       />
     </svg>
   ),
+  // Instagram: () => (
+  //   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  //     <rect
+  //       x="2"
+  //       y="2"
+  //       width="20"
+  //       height="20"
+  //       rx="5"
+  //       stroke="currentColor"
+  //       strokeWidth="1.8"
+  //     />
+  //     <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="1.8" />
+  //     <circle cx="17.5" cy="6.5" r="1" fill="currentColor" />
+  //   </svg>
+  // ),
+  // Telegram: () => (
+  //   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  //     <path
+  //       d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z"
+  //       stroke="currentColor"
+  //       strokeWidth="1.8"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //   </svg>
+  // ),
+  // Facebook: () => (
+  //   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  //     <path
+  //       d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"
+  //       stroke="currentColor"
+  //       strokeWidth="1.8"
+  //       strokeLinecap="round"
+  //       strokeLinejoin="round"
+  //     />
+  //   </svg>
+  // ),
+  // Youtube: () => (
+  //   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+  //     <path
+  //       d="M22 8s-.3-2-1.2-2.7c-1.1-1.2-2.4-1.2-3-1.3C15.6 4 12 4 12 4s-3.6 0-5.8.2c-.6 0-1.9 0-3 1.2C2.3 6 2 8 2 8S1.8 10.3 1.8 12.6v2.1c0 2.3.2 4.6.2 4.6s.3 2 1.2 2.7c1.1 1.1 2.6 1.1 3.3 1.1C8.7 23.2 12 23.2 12 23.2s3.6 0 5.8-.3c.6 0 1.9 0 3-1.2.9-.7 1.2-2.7 1.2-2.7s.2-2.3.2-4.6v-2.2C22.2 10.2 22 8 22 8z"
+  //       stroke="currentColor"
+  //       strokeWidth="1.8"
+  //     />
+  //     <polygon
+  //       points="10,8.5 15,12 10,15.5"
+  //       stroke="currentColor"
+  //       strokeWidth="1.5"
+  //       fill="none"
+  //       strokeLinejoin="round"
+  //     />
+  //   </svg>
+  // ),
+  TikTok: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M9 12a4 4 0 104 4V4a5 5 0 005 5"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  WhatsApp: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  LinkedIn: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M16 8a6 6 0 016 6v7h-4v-7a2 2 0 00-2-2 2 2 0 00-2 2v7h-4v-7a6 6 0 016-6zM2 9h4v12H2z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="4" cy="4" r="2" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  ),
+  Card: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <rect
+        x="2"
+        y="5"
+        width="20"
+        height="14"
+        rx="2"
+        stroke="currentColor"
+        strokeWidth="1.8"
+      />
+      <path d="M2 10h20" stroke="currentColor" strokeWidth="1.8" />
+    </svg>
+  ),
+  Building: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M3 21h18M3 7l9-4 9 4M4 21V7M20 21V7M9 21v-4h6v4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  Google: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M21 11H12v3h5.2A5 5 0 017 12a5 5 0 015-5c1.4 0 2.6.5 3.5 1.4L18 5.9A9 9 0 003 12a9 9 0 009 9c5 0 9-4 9-9 0-.3 0-.7-.1-1z"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  FriendRef: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="9" cy="7" r="4" stroke="currentColor" strokeWidth="1.8" />
+      <path
+        d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  ),
+  More: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <circle cx="12" cy="5" r="1.5" fill="currentColor" />
+      <circle cx="12" cy="12" r="1.5" fill="currentColor" />
+      <circle cx="12" cy="19" r="1.5" fill="currentColor" />
+    </svg>
+  ),
 };
