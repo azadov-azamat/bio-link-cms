@@ -1,4 +1,4 @@
-// 'use client'
+'use client'
 
 // import { useState, useRef, useEffect } from 'react'
 // import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
@@ -213,10 +213,10 @@ function ProfileCard({ theme = "light", name, handle, bio, color, accent, delay 
           <div
             key={i}
             className={`w-full py-2 px-3 mb-1.5 rounded-xl text-center text-[11px] font-semibold ${i === 0
-                ? "text-white"
-                : theme === "dark"
-                  ? "bg-white/10 text-white/80"
-                  : "bg-zinc-100 text-zinc-600"
+              ? "text-white"
+              : theme === "dark"
+                ? "bg-white/10 text-white/80"
+                : "bg-zinc-100 text-zinc-600"
               }`}
             style={i === 0 ? { background: `linear-gradient(135deg, ${color}, ${accent})` } : {}}
           >
