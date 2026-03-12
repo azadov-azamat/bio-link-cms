@@ -71,6 +71,57 @@ type TranslationDictionary = {
     companyLinks: string[];
     copyright: string;
   };
+  auth: {
+    backHome: string;
+    title: string;
+    description: string;
+    loginWithGoogle: string;
+    loginWithFacebook: string;
+    loginWithTelegram: string;
+    termsPrefix: string;
+    termsLink: string;
+    and: string;
+    privacyLink: string;
+    termsSuffix: string;
+    samplePage: string;
+    sampleRole: string;
+    sampleButtons: string[];
+    yourLink: string;
+  };
+  onboarding: {
+    progressStep: string;
+    stepBadge: string;
+    back: string;
+    skip: string;
+    continue: string;
+    finish: string;
+    preview: string;
+    link: string;
+    steps: { id: number; title: string; desc: string }[];
+    step1Options: string[];
+    step2Options: string[];
+    uploadTitle: string;
+    uploadClick: string;
+    uploadHint: string;
+    remove: string;
+    titleLabel: string;
+    titlePlaceholder: string;
+    descriptionLabel: string;
+    optional: string;
+    descriptionPlaceholder: string;
+    socialPlaceholders: Record<string, string>;
+    contactButton: string;
+    workHours: string;
+    phone1: string;
+    phone2: string;
+    googleMaps: string;
+    mapsPlaceholder: string;
+    note: string;
+    notePlaceholder: string;
+    successTitle: string;
+    successDescription: string;
+    dashboard: string;
+  };
 };
 
 export const translations: Record<Locale, TranslationDictionary> = {
@@ -211,6 +262,72 @@ export const translations: Record<Locale, TranslationDictionary> = {
       companyLinks: ["Biz haqimizda", "Aloqa", "Shartlar", "Maxfiylik"],
       copyright: "© 2025 BioSahifa. Barcha huquqlar himoyalangan.",
     },
+    auth: {
+      backHome: "Bosh sahifaga qaytish",
+      title: "Tizimga kirish",
+      description: "Hisobingizga kiring va shaxsiy sahifangizni yaratishni boshlang.",
+      loginWithGoogle: "Google orqali kirish",
+      loginWithFacebook: "Facebook orqali kirish",
+      loginWithTelegram: "Telegram orqali kirish",
+      termsPrefix: "Davom etish orqali siz",
+      termsLink: "foydalanish shartlari",
+      and: "va",
+      privacyLink: "maxfiylik siyosatiga",
+      termsSuffix: "rozilik bildirasiz.",
+      samplePage: "Namuna sahifa",
+      sampleRole: "UX Dizayner · Toshkent",
+      sampleButtons: ["Bog'lanish", "Portfolio", "Telegram"],
+      yourLink: "Sizning havolangiz",
+    },
+    onboarding: {
+      progressStep: "{step}/{total}-qadam",
+      stepBadge: "{step}-qadam",
+      back: "Orqaga",
+      skip: "O'tkazib yuborish",
+      continue: "Davom etish →",
+      finish: "Yakunlash 🎉",
+      preview: "Ko'rinish",
+      link: "Havola",
+      steps: [
+        { id: 1, title: "Qaysi manba orqali bilib oldingiz?", desc: "BioSahifa haqida qaysi manbadan bilib oldingiz?" },
+        { id: 2, title: "Havolangizni qayerga joylashtirmoqchisiz?", desc: "Bir yoki bir nechta platformani tanlashingiz mumkin." },
+        { id: 3, title: "Shablonni tanlang", desc: "O'zingizga mos dizaynni tanlang. Keyinroq ham o'zgartirishingiz mumkin." },
+        { id: 4, title: "Asosiy ma'lumotlarni kiriting", desc: "Bu ma'lumotlar sahifangizning asosiy ko'rinishini belgilaydi." },
+        { id: 5, title: "Ijtimoiy tarmoqlar havolalari", desc: "Kerakli havolalarni qo'shing. Istalganlarini bo'sh qoldirishingiz mumkin." },
+        { id: 6, title: "Qo'shimcha ma'lumotlar", desc: "Ish vaqti, manzil va aloqa ma'lumotlarini kiriting." },
+      ],
+      step1Options: ["Instagram", "Telegram", "Facebook", "YouTube", "Google qidiruv", "Do'st tavsiyasi", "Boshqa"],
+      step2Options: ["Instagram bio", "Telegram profil", "TikTok bio", "YouTube tavsifi", "Facebook sahifa", "WhatsApp", "LinkedIn", "Shaxsiy vizitka", "Biznes profili", "Boshqa"],
+      uploadTitle: "Logo / Rasm",
+      uploadClick: "Rasm yuklash uchun bosing",
+      uploadHint: "PNG, JPG, SVG — max 2MB",
+      remove: "O'chirish",
+      titleLabel: "Sarlavha",
+      titlePlaceholder: "Masalan: Aziza Karimova yoki MegaZon UZ",
+      descriptionLabel: "Tavsif",
+      optional: "ixtiyoriy",
+      descriptionPlaceholder: "Qisqacha o'zingiz haqingizda...",
+      socialPlaceholders: {
+        Instagram: "instagram.com/sizning-nom",
+        Telegram: "t.me/sizning-nom",
+        Facebook: "facebook.com/sizning-nom",
+        YouTube: "youtube.com/@sizning-nom",
+        TikTok: "tiktok.com/@sizning-nom",
+        LinkedIn: "linkedin.com/in/sizning-nom",
+        Website: "sizning-sayt.uz",
+      },
+      contactButton: "Bog'lanish",
+      workHours: "Ish vaqti",
+      phone1: "Telefon 1",
+      phone2: "Telefon 2",
+      googleMaps: "Google Maps",
+      mapsPlaceholder: "Google Maps havolasi",
+      note: "Qo'shimcha eslatma",
+      notePlaceholder: "Qo'shimcha ma'lumot...",
+      successTitle: "Tabriklayapman!",
+      successDescription: "Sahifangiz tayyor. Endi dashboard'da tahrirlash va boshqarish mumkin.",
+      dashboard: "Dashboard'ga o'tish",
+    },
   },
   en: {
     navbar: {
@@ -332,6 +449,72 @@ export const translations: Record<Locale, TranslationDictionary> = {
       companyLinks: ["About", "Contact", "Terms", "Privacy"],
       copyright: "© 2025 BioSahifa. All rights reserved.",
     },
+    auth: {
+      backHome: "Back to home",
+      title: "Sign in",
+      description: "Sign in to your account and start building your personal page.",
+      loginWithGoogle: "Continue with Google",
+      loginWithFacebook: "Continue with Facebook",
+      loginWithTelegram: "Continue with Telegram",
+      termsPrefix: "By continuing, you agree to the",
+      termsLink: "Terms of use",
+      and: "and",
+      privacyLink: "Privacy policy",
+      termsSuffix: ".",
+      samplePage: "Sample page",
+      sampleRole: "UX Designer · Tashkent",
+      sampleButtons: ["Contact", "Portfolio", "Telegram"],
+      yourLink: "Your link",
+    },
+    onboarding: {
+      progressStep: "Step {step} of {total}",
+      stepBadge: "Step {step}",
+      back: "Back",
+      skip: "Skip",
+      continue: "Continue →",
+      finish: "Finish 🎉",
+      preview: "Preview",
+      link: "Link",
+      steps: [
+        { id: 1, title: "How did you hear about us?", desc: "Where did you first hear about BioSahifa?" },
+        { id: 2, title: "Where will you place your link?", desc: "You can choose one or multiple platforms." },
+        { id: 3, title: "Choose a template", desc: "Pick a design that fits you. You can change it later." },
+        { id: 4, title: "Enter basic information", desc: "These details define your page's primary appearance." },
+        { id: 5, title: "Social media links", desc: "Add the links you need. You can leave any of them empty." },
+        { id: 6, title: "Additional information", desc: "Enter working hours, address, and contact information." },
+      ],
+      step1Options: ["Instagram", "Telegram", "Facebook", "YouTube", "Google search", "Friend referral", "Other"],
+      step2Options: ["Instagram bio", "Telegram profile", "TikTok bio", "YouTube description", "Facebook page", "WhatsApp", "LinkedIn", "Personal business card", "Business profile", "Other"],
+      uploadTitle: "Logo / Image",
+      uploadClick: "Click to upload an image",
+      uploadHint: "PNG, JPG, SVG — max 2MB",
+      remove: "Remove",
+      titleLabel: "Title",
+      titlePlaceholder: "For example: Aziza Karimova or MegaZon UZ",
+      descriptionLabel: "Description",
+      optional: "optional",
+      descriptionPlaceholder: "A short bio about yourself...",
+      socialPlaceholders: {
+        Instagram: "instagram.com/your-name",
+        Telegram: "t.me/your-name",
+        Facebook: "facebook.com/your-name",
+        YouTube: "youtube.com/@your-name",
+        TikTok: "tiktok.com/@your-name",
+        LinkedIn: "linkedin.com/in/your-name",
+        Website: "your-site.uz",
+      },
+      contactButton: "Contact",
+      workHours: "Working hours",
+      phone1: "Phone 1",
+      phone2: "Phone 2",
+      googleMaps: "Google Maps",
+      mapsPlaceholder: "Google Maps link",
+      note: "Additional note",
+      notePlaceholder: "Additional information...",
+      successTitle: "Congratulations!",
+      successDescription: "Your page is ready. Now you can edit and manage it in the dashboard.",
+      dashboard: "Go to dashboard",
+    },
   },
   ru: {
     navbar: {
@@ -452,6 +635,72 @@ export const translations: Record<Locale, TranslationDictionary> = {
       platformLinks: ["Возможности", "Шаблоны", "Цены", "Блог"],
       companyLinks: ["О нас", "Контакты", "Условия", "Конфиденциальность"],
       copyright: "© 2025 BioSahifa. Все права защищены.",
+    },
+    auth: {
+      backHome: "Вернуться на главную",
+      title: "Вход в систему",
+      description: "Войдите в аккаунт и начните создавать свою персональную страницу.",
+      loginWithGoogle: "Войти через Google",
+      loginWithFacebook: "Войти через Facebook",
+      loginWithTelegram: "Войти через Telegram",
+      termsPrefix: "Продолжая, вы соглашаетесь с",
+      termsLink: "условиями использования",
+      and: "и",
+      privacyLink: "политикой конфиденциальности",
+      termsSuffix: ".",
+      samplePage: "Пример страницы",
+      sampleRole: "UX Дизайнер · Ташкент",
+      sampleButtons: ["Связаться", "Портфолио", "Telegram"],
+      yourLink: "Ваша ссылка",
+    },
+    onboarding: {
+      progressStep: "Шаг {step} из {total}",
+      stepBadge: "Шаг {step}",
+      back: "Назад",
+      skip: "Пропустить",
+      continue: "Продолжить →",
+      finish: "Завершить 🎉",
+      preview: "Предпросмотр",
+      link: "Ссылка",
+      steps: [
+        { id: 1, title: "Откуда вы о нас узнали?", desc: "Где вы впервые узнали о BioSahifa?" },
+        { id: 2, title: "Где вы разместите ссылку?", desc: "Можно выбрать одну или несколько платформ." },
+        { id: 3, title: "Выберите шаблон", desc: "Выберите подходящий дизайн. Позже его можно изменить." },
+        { id: 4, title: "Введите основную информацию", desc: "Эти данные формируют основной вид вашей страницы." },
+        { id: 5, title: "Ссылки на соцсети", desc: "Добавьте нужные ссылки. Ненужные поля можно оставить пустыми." },
+        { id: 6, title: "Дополнительная информация", desc: "Укажите график работы, адрес и контактные данные." },
+      ],
+      step1Options: ["Instagram", "Telegram", "Facebook", "YouTube", "Поиск Google", "По рекомендации друзей", "Другое"],
+      step2Options: ["Instagram bio", "Профиль Telegram", "TikTok bio", "Описание YouTube", "Страница Facebook", "WhatsApp", "LinkedIn", "Личная визитка", "Бизнес-профиль", "Другое"],
+      uploadTitle: "Логотип / Изображение",
+      uploadClick: "Нажмите, чтобы загрузить изображение",
+      uploadHint: "PNG, JPG, SVG — максимум 2MB",
+      remove: "Удалить",
+      titleLabel: "Заголовок",
+      titlePlaceholder: "Например: Aziza Karimova или MegaZon UZ",
+      descriptionLabel: "Описание",
+      optional: "необязательно",
+      descriptionPlaceholder: "Коротко о себе...",
+      socialPlaceholders: {
+        Instagram: "instagram.com/ваше-имя",
+        Telegram: "t.me/ваше-имя",
+        Facebook: "facebook.com/ваше-имя",
+        YouTube: "youtube.com/@ваше-имя",
+        TikTok: "tiktok.com/@ваше-имя",
+        LinkedIn: "linkedin.com/in/ваше-имя",
+        Website: "ваш-сайт.uz",
+      },
+      contactButton: "Связаться",
+      workHours: "График работы",
+      phone1: "Телефон 1",
+      phone2: "Телефон 2",
+      googleMaps: "Google Maps",
+      mapsPlaceholder: "Ссылка Google Maps",
+      note: "Дополнительная заметка",
+      notePlaceholder: "Дополнительная информация...",
+      successTitle: "Поздравляем!",
+      successDescription: "Ваша страница готова. Теперь вы можете редактировать и управлять ей в панели управления.",
+      dashboard: "Перейти в дашборд",
     },
   },
 };

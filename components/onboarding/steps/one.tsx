@@ -7,22 +7,25 @@ import { OnboardingData } from "../utils";
 interface Step1Props {
   data: OnboardingData;
   onChange: (key: keyof OnboardingData, value: string) => void;
+  options: string[];
 }
 
-export const Step1 = ({ data, onChange }: Step1Props) => {
-  const options: { label: string; Icon: () => JSX.Element }[] = [
-    { label: "Instagram", Icon: Icons.Instagram },
-    { label: "Telegram", Icon: Icons.Telegram },
-    { label: "Facebook", Icon: Icons.Facebook },
-    { label: "YouTube", Icon: Icons.Youtube },
-    { label: "Google qidiruv", Icon: Icons.Google },
-    { label: "Do'st tavsiyasi", Icon: Icons.FriendRef },
-    { label: "Boshqa", Icon: Icons.More },
-  ];
+const ICONS: Array<() => JSX.Element> = [
+  Icons.Instagram,
+  Icons.Telegram,
+  Icons.Facebook,
+  Icons.Youtube,
+  Icons.Google,
+  Icons.FriendRef,
+  Icons.More,
+];
+
+export const Step1 = ({ data, onChange, options }: Step1Props) => {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      {options.map(({ label, Icon }) => {
+      {options.map((label, index) => {
+        const Icon = ICONS[index] ?? Icons.More;
         const selected = data.source === label;
         return (
           <button
