@@ -1,8 +1,10 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useI18n } from './i18n-provider';
 
 export function TrustSection() {
+  const { t } = useI18n();
   const brands = [
     { name: 'TechHub UZ', abbr: 'TH' },
     { name: 'Bestbrands', abbr: 'BB' },
@@ -21,7 +23,7 @@ export function TrustSection() {
           viewport={{ once: true }}
           className="text-center text-[13px] font-medium text-zinc-400 uppercase tracking-widest mb-10"
         >
-          Bizneslar, mutaxassislar va brendlar uchun qulay sahifa yaratuvchi platforma
+          {t.trust.caption}
         </motion.p>
         <div className="flex flex-wrap justify-center gap-4 md:gap-8">
           {brands.map((b, i) => (
