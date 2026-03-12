@@ -15,6 +15,27 @@ import { Step2 } from "@/components/onboarding/steps/two";
 import { useI18n } from "@/components/i18n-provider";
 import { PlusIcon, Trash2Icon } from "lucide-react";
 
+const triggerFinishHaptic = () => {
+  if (typeof window === "undefined") return;
+
+  const maybeWindow = window as Window & {
+    haptics?: { trigger?: (event: string) => void };
+    telegramHaptics?: { trigger?: (event: string) => void };
+    Telegram?: {
+      WebApp?: {
+        HapticFeedback?: {
+          notificationOccurred?: (type: "success" | "warning" | "error") => void;
+        };
+      };
+    };
+  };
+
+  maybeWindow.haptics?.trigger?.("success");
+  maybeWindow.telegramHaptics?.trigger?.("success");
+  maybeWindow.Telegram?.WebApp?.HapticFeedback?.notificationOccurred?.("success");
+  window.navigator.vibrate?.([15, 40, 20]);
+};
+
 const Step3 = ({
   data,
   onChange,
@@ -494,7 +515,10 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
     if (step < 6) {
       setDirection(1);
       setStep((s) => s + 1);
-    } else onFinish();
+    } else {
+      triggerFinishHaptic();
+      onFinish();
+    }
   };
 
   const goPrev = () => {
