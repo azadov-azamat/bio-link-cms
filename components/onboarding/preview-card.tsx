@@ -24,6 +24,7 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
   const activeSocials = Object.entries(data.socials).filter(([, v]) => v.trim());
   const activePhones = data.phones.filter((phone) => phone.trim());
   const hasContactInfo = !!data.workHours.trim() || activePhones.length > 0 || !!data.googleMaps.trim();
+  const formattedWorkHours = data.workHours.replace(" - ", " — ");
   const template = data.template;
   const theme =
     THEME_TEMPLATES[template as keyof typeof THEME_TEMPLATES] ||
@@ -72,12 +73,33 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
         </div>
 
         {!compact && hasContactInfo && (
-          <div className={`mt-2 text-[9px] ${theme.sub} space-y-1`}>
-            {data.workHours.trim() && <p>{data.workHours}</p>}
+          <div className="mt-2 space-y-1.5">
+            {data.workHours.trim() && (
+              <div className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-[9px] ${theme.btn} ${theme.btnText}`}>
+                <span className="scale-[0.55] opacity-90">
+                  <Icons.Clock />
+                </span>
+                <span className="font-semibold tracking-wide">{formattedWorkHours}</span>
+              </div>
+            )}
+
             {activePhones.slice(0, 2).map((phone) => (
-              <p key={phone}>{phone}</p>
+              <div key={phone} className={`flex items-center gap-1.5 text-[9px] ${theme.sub}`}>
+                <span className="scale-[0.55] opacity-80">
+                  <Icons.Phone />
+                </span>
+                <span className="truncate">{phone}</span>
+              </div>
             ))}
-            {data.googleMaps.trim() && <p className="truncate">{i18n.onboarding.googleMaps}</p>}
+
+            {data.googleMaps.trim() && (
+              <div className={`flex items-center gap-1.5 text-[9px] ${theme.sub}`}>
+                <span className="scale-[0.55] opacity-80">
+                  <Icons.MapPin />
+                </span>
+                <span className="truncate">{i18n.onboarding.googleMaps}</span>
+              </div>
+            )}
           </div>
         )}
 

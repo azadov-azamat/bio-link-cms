@@ -293,14 +293,29 @@ const Step6 = ({
     onChange("phones", nextPhones.length ? nextPhones : [""]);
   };
 
-  const [startTime = "", endTime = ""] = data.workHours.split(" - ");
+  const parseWorkHours = (value: string) => {
+    const normalized = value.trim();
+    if (!normalized) return { start: "", end: "" };
+
+    const [rawStart = "", rawEnd = ""] = normalized.split("-");
+    const start = rawStart.trim();
+    const end = rawEnd.trim();
+
+    if (!normalized.includes("-")) {
+      return { start: normalized, end: "" };
+    }
+
+    return { start, end };
+  };
 
   const buildWorkHours = (start: string, end: string) => {
     if (!start && !end) return "";
-    if (!start) return `- ${end}`;
-    if (!end) return `${start} -`;
-    return `${start} - ${end}`;
+    if (start && end) return `${start} - ${end}`;
+    if (start) return start;
+    return `- ${end}`;
   };
+
+  const { start: startTime, end: endTime } = parseWorkHours(data.workHours);
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
