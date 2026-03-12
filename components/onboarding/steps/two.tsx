@@ -8,21 +8,23 @@ import { CheckIcon } from "lucide-react";
 interface Step2Props {
   data: OnboardingData;
   onChange: (key: keyof OnboardingData, value: string[]) => void;
+  options: string[];
 }
 
-export const Step2 = ({ data, onChange }: Step2Props) => {
-  const options: { label: string; Icon: () => JSX.Element }[] = [
-    { label: "Instagram bio", Icon: Icons.Instagram },
-    { label: "Telegram profil", Icon: Icons.Telegram },
-    { label: "TikTok bio", Icon: Icons.TikTok },
-    { label: "YouTube tavsifi", Icon: Icons.Youtube },
-    { label: "Facebook sahifa", Icon: Icons.Facebook },
-    { label: "WhatsApp", Icon: Icons.WhatsApp },
-    { label: "LinkedIn", Icon: Icons.LinkedIn },
-    { label: "Shaxsiy vizitka", Icon: Icons.Card },
-    { label: "Biznes profili", Icon: Icons.Building },
-    { label: "Boshqa", Icon: Icons.More },
-  ];
+const ICONS: Array<() => JSX.Element> = [
+  Icons.Instagram,
+  Icons.Telegram,
+  Icons.TikTok,
+  Icons.Youtube,
+  Icons.Facebook,
+  Icons.WhatsApp,
+  Icons.LinkedIn,
+  Icons.Card,
+  Icons.Building,
+  Icons.More,
+];
+
+export const Step2 = ({ data, onChange, options }: Step2Props) => {
 
   const toggle = (label: string) => {
     const updated = data.platforms.includes(label)
@@ -33,7 +35,8 @@ export const Step2 = ({ data, onChange }: Step2Props) => {
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-      {options.map(({ label, Icon }) => {
+      {options.map((label, index) => {
+        const Icon = ICONS[index] ?? Icons.More;
         const selected = data.platforms.includes(label);
         return (
           <button

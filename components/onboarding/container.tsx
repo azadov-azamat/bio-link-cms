@@ -12,39 +12,7 @@ import {
 import { PreviewCard } from "@/components/onboarding/preview-card";
 import { Step1 } from "@/components/onboarding/steps/one";
 import { Step2 } from "@/components/onboarding/steps/two";
-
-const STEPS = [
-  {
-    id: 1,
-    title: "Qaysi manba orqali bilib oldingiz?",
-    desc: "Bizneslari topib, qaysi manbadan bilib oldingiz?",
-  },
-  {
-    id: 2,
-    title: "Havolangizni qayerga joylashtirmoqchisiz?",
-    desc: "Bir yoki bir nechta platformani tanlashingiz mumkin.",
-  },
-  {
-    id: 3,
-    title: "Shablonni tanlang",
-    desc: "O'zingizga mos dizaynni tanlang. Keyinroq ham o'zgartirishingiz mumkin.",
-  },
-  {
-    id: 4,
-    title: "Asosiy ma'lumotlarni kiriting",
-    desc: "Bu ma'lumotlar sahifangizning asosiy ko'rinishini belgilaydi.",
-  },
-  {
-    id: 5,
-    title: "Ijtimoiy tarmoqlar havolalari",
-    desc: "Kerakli havolalarni qo'shing. Istalganlarini bo'sh qoldirishingiz mumkin.",
-  },
-  {
-    id: 6,
-    title: "Qo'shimcha ma'lumotlar",
-    desc: "Ish vaqti, manzil va aloqa ma'lumotlarini kiriting.",
-  },
-];
+import { useI18n } from "@/components/i18n-provider";
 
 const Step3 = ({
   data,
@@ -95,6 +63,7 @@ const Step4 = ({
   data: OnboardingData;
   onChange: (key: keyof OnboardingData, value: string | null) => void;
 }) => {
+  const { t } = useI18n();
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +79,7 @@ const Step4 = ({
       <div className="space-y-5">
         <div>
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            Logo / Rasm
+            {t.onboarding.uploadTitle}
           </label>
           <div
             onClick={() => fileRef.current?.click()}
@@ -129,10 +98,10 @@ const Step4 = ({
                   <Icons.UploadIcon />
                 </div>
                 <p className="text-[13px] font-medium text-zinc-500">
-                  Rasm yuklash uchun bosing
+                  {t.onboarding.uploadClick}
                 </p>
                 <p className="text-[11px] text-zinc-400 mt-1">
-                  PNG, JPG, SVG — max 2MB
+                  {t.onboarding.uploadHint}
                 </p>
               </>
             )}
@@ -149,34 +118,34 @@ const Step4 = ({
               onClick={() => onChange("logo", null)}
               className="mt-2 text-[12px] text-zinc-400 hover:text-red-500 transition-colors"
             >
-              O'chirish
+{t.onboarding.remove}
             </button>
           )}
         </div>
 
         <div>
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            Sarlavha <span className="text-red-400">*</span>
+            {t.onboarding.titleLabel} <span className="text-red-400">*</span>
           </label>
           <input
             type="text"
             value={data.title}
             onChange={(e) => onChange("title", e.target.value)}
-            placeholder="Masalan: Aziza Karimova yoki MegaZon UZ"
+            placeholder={t.onboarding.titlePlaceholder}
             className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
           />
         </div>
 
         <div>
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            Tavsif{" "}
-            <span className="text-zinc-400 font-normal">(ixtiyoriy)</span>
+            {t.onboarding.descriptionLabel}{" "}
+            <span className="text-zinc-400 font-normal">({t.onboarding.optional})</span>
           </label>
           <textarea
             value={data.description}
             onChange={(e) => onChange("description", e.target.value)}
             rows={3}
-            placeholder="Qisqacha o'zingiz haqingizda..."
+            placeholder={t.onboarding.descriptionPlaceholder}
             className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all resize-none"
           />
         </div>
@@ -184,13 +153,13 @@ const Step4 = ({
 
       <div className="flex flex-col items-center justify-center bg-zinc-50 rounded-2xl p-6 border border-zinc-100">
         <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest mb-5">
-          Ko'rinish
+          {t.onboarding.preview}
         </p>
         <PreviewCard data={data} />
         {data.title && (
           <div className="mt-4 bg-zinc-900 rounded-xl px-4 py-2.5">
             <p className="text-[11px] text-zinc-400 text-center mb-0.5">
-              Havola
+              {t.onboarding.link}
             </p>
             <p className="text-[13px] font-bold text-white text-center">
               {toSlug(data.title)}.biosahifa.uz
@@ -209,6 +178,7 @@ const Step5 = ({
   data: OnboardingData;
   onChange: (key: keyof OnboardingData, value: Record<string, string>) => void;
 }) => {
+  const { t } = useI18n();
   const fields: {
     key: string;
     label: string;
@@ -218,43 +188,43 @@ const Step5 = ({
     {
       key: "Instagram",
       label: "Instagram",
-      placeholder: "instagram.com/sizning-nom",
+      placeholder: t.onboarding.socialPlaceholders.Instagram,
       Icon: Icons.Instagram,
     },
     {
       key: "Telegram",
       label: "Telegram",
-      placeholder: "t.me/sizning-nom",
+      placeholder: t.onboarding.socialPlaceholders.Telegram,
       Icon: Icons.Telegram,
     },
     {
       key: "Facebook",
       label: "Facebook",
-      placeholder: "facebook.com/sizning-nom",
+      placeholder: t.onboarding.socialPlaceholders.Facebook,
       Icon: Icons.Facebook,
     },
     {
       key: "YouTube",
       label: "YouTube",
-      placeholder: "youtube.com/@sizning-nom",
+      placeholder: t.onboarding.socialPlaceholders.YouTube,
       Icon: Icons.Youtube,
     },
     {
       key: "TikTok",
       label: "TikTok",
-      placeholder: "tiktok.com/@sizning-nom",
+      placeholder: t.onboarding.socialPlaceholders.TikTok,
       Icon: Icons.TikTok,
     },
     {
       key: "LinkedIn",
       label: "LinkedIn",
-      placeholder: "linkedin.com/in/sizning-nom",
+      placeholder: t.onboarding.socialPlaceholders.LinkedIn,
       Icon: Icons.LinkedIn,
     },
     {
       key: "Website",
       label: "Website",
-      placeholder: "sizning-sayt.uz",
+      placeholder: t.onboarding.socialPlaceholders.Website,
       Icon: Icons.Globe,
     },
   ];
@@ -290,7 +260,7 @@ const Step5 = ({
 
       <div className="flex flex-col items-center justify-center bg-zinc-50 rounded-2xl p-6 border border-zinc-100">
         <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest mb-5">
-          Ko'rinish
+          {t.onboarding.preview}
         </p>
         <PreviewCard data={data} />
       </div>
@@ -305,12 +275,13 @@ const Step6 = ({
   data: OnboardingData;
   onChange: (key: keyof OnboardingData, value: string) => void;
 }) => {
+  const { t } = useI18n();
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div className="space-y-3">
         <div>
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            Ish vaqti
+            {t.onboarding.workHours}
           </label>
           <input
             type="text"
@@ -323,7 +294,7 @@ const Step6 = ({
 
         <div>
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            Telefon 1
+            {t.onboarding.phone1}
           </label>
           <input
             type="tel"
@@ -336,7 +307,7 @@ const Step6 = ({
 
         <div>
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            Telefon 2
+            {t.onboarding.phone2}
           </label>
           <input
             type="tel"
@@ -349,26 +320,26 @@ const Step6 = ({
 
         <div>
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            Google Maps
+            {t.onboarding.googleMaps}
           </label>
           <input
             type="url"
             value={data.googleMaps}
             onChange={(e) => onChange("googleMaps", e.target.value)}
-            placeholder="Google Maps havolasi"
+            placeholder={t.onboarding.mapsPlaceholder}
             className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
           />
         </div>
 
         <div>
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            Qo'shimcha eslatma
+            {t.onboarding.note}
           </label>
           <textarea
             value={data.note}
             onChange={(e) => onChange("note", e.target.value)}
             rows={2}
-            placeholder="Qo'shimcha ma'lumot..."
+            placeholder={t.onboarding.notePlaceholder}
             className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all resize-none"
           />
         </div>
@@ -376,7 +347,7 @@ const Step6 = ({
 
       <div className="flex flex-col items-center justify-center bg-zinc-50 rounded-2xl p-6 border border-zinc-100">
         <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest mb-5">
-          Ko'rinish
+          {t.onboarding.preview}
         </p>
         <PreviewCard data={data} />
       </div>
@@ -385,6 +356,7 @@ const Step6 = ({
 };
 
 const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
+  const { t } = useI18n();
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState<OnboardingData>(INITIAL_DATA);
@@ -418,6 +390,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
     }
   };
 
+  const STEPS = t.onboarding.steps;
   const progress = (step / 6) * 100;
   const currentStep = STEPS[step - 1];
 
@@ -442,7 +415,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
           <div className="flex-1 mx-2">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[11px] font-semibold text-zinc-400">
-                {step}/6-qadam
+                {t.onboarding.progressStep.replace("{step}", String(step)).replace("{total}", "6")}
               </span>
               <span className="text-[11px] font-semibold text-zinc-400">
                 {Math.round(progress)}%
@@ -490,7 +463,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             className="mb-8"
           >
             <div className="inline-flex items-center gap-2 bg-zinc-100 rounded-full px-3 py-1 text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-4">
-              {step}-qadam
+              {t.onboarding.stepBadge.replace("{step}", String(step))}
             </div>
             <h2
               className="text-[28px] sm:text-[34px] font-black text-zinc-900 tracking-tight leading-tight"
@@ -514,12 +487,17 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             className="flex-1"
           >
             {step === 1 && (
-              <Step1 data={data} onChange={(k, v) => update(k, v as string)} />
+              <Step1
+                data={data}
+                onChange={(k, v) => update(k, v as string)}
+                options={t.onboarding.step1Options}
+              />
             )}
             {step === 2 && (
               <Step2
                 data={data}
                 onChange={(k, v) => update(k, v as string[])}
+                options={t.onboarding.step2Options}
               />
             )}
             {step === 3 && (
@@ -550,7 +528,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             className="flex items-center gap-2 px-5 py-3 rounded-2xl border border-zinc-200 text-[14px] font-semibold text-zinc-600 hover:bg-zinc-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >
             <Icons.ArrowLeft />
-            Orqaga
+            {t.onboarding.back}
           </button>
 
           <div className="flex items-center gap-2">
@@ -559,7 +537,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
                 onClick={goNext}
                 className="px-3 py-3 rounded-2xl text-[13px] font-medium text-zinc-400 hover:text-zinc-600 transition-colors"
               >
-                O'tkazib yuborish
+                {t.onboarding.skip}
               </button>
             )}
             <button
@@ -567,7 +545,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
               disabled={!canNext()}
               className="px-6 py-3 bg-zinc-900 text-white text-[14px] font-bold rounded-2xl shadow-lg shadow-zinc-900/15 hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5 disabled:hover:translate-y-0"
             >
-              {step === 6 ? "Yakunlash 🎉" : "Davom etish →"}
+              {step === 6 ? t.onboarding.finish : t.onboarding.continue}
             </button>
           </div>
         </div>
@@ -577,6 +555,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
 };
 
 const SuccessScreen = ({ onDashboard }: { onDashboard: () => void }) => {
+  const { t } = useI18n();
   return (
     <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-4">
       <motion.div
@@ -591,16 +570,16 @@ const SuccessScreen = ({ onDashboard }: { onDashboard: () => void }) => {
           </div>
         </div>
         <h1 className="text-[32px] font-black text-zinc-900 mb-3">
-          Tabriklayapman!
+          {t.onboarding.successTitle}
         </h1>
         <p className="text-[15px] text-zinc-500 mb-8 leading-relaxed">
-          Sahifangiz tayyor. Endi dashboard'da tahrirlash va boshqarish mumkin.
+          {t.onboarding.successDescription}
         </p>
         <button
           onClick={onDashboard}
           className="w-full px-6 py-3 bg-zinc-900 text-white text-[14px] font-bold rounded-2xl shadow-lg shadow-zinc-900/15 hover:bg-zinc-700 transition-all hover:-translate-y-0.5"
         >
-          Dashboard'ga o'tish
+          {t.onboarding.dashboard}
         </button>
       </motion.div>
     </div>
