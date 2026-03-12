@@ -7,12 +7,8 @@ export interface OnboardingData {
   description: string;
   socials: Record<string, string>;
   workHours: string;
-  phone1: string;
-  phone2: string;
+  phones: string[];
   googleMaps: string;
-  yandexMaps: string;
-  twoGis: string;
-  note: string;
 }
 
 export const toSlug = (text: string): string =>
@@ -32,12 +28,8 @@ export const INITIAL_DATA: OnboardingData = {
   description: "",
   socials: {},
   workHours: "",
-  phone1: "",
-  phone2: "",
+  phones: [""],
   googleMaps: "",
-  yandexMaps: "",
-  twoGis: "",
-  note: "",
 };
 
 export const THEME_TEMPLATES = {
