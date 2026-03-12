@@ -76,7 +76,7 @@ function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const scrollTo = (id) => {
+  const scrollTo = (id: any) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMobileOpen(false);
   };
@@ -182,7 +182,7 @@ function Navbar() {
 // ============================================================
 // MOCK PROFILE CARD (reusable in hero)
 // ============================================================
-function ProfileCard({ theme = "light", name, handle, bio, color, accent, delay = 0 }) {
+function ProfileCard({ theme = "light", name, handle, bio, color, accent, delay = 0 }: any) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30, scale: 0.95 }}
