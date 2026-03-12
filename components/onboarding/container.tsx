@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "@/components/icons";
 import {
@@ -209,55 +209,71 @@ const Step5 = ({
   data: OnboardingData;
   onChange: (key: keyof OnboardingData, value: Record<string, string>) => void;
 }) => {
-  const fields = [
+  const fields: {
+    key: string;
+    label: string;
+    placeholder: string;
+    Icon: () => any;
+  }[] = [
     {
       key: "Instagram",
       label: "Instagram",
       placeholder: "instagram.com/sizning-nom",
+      Icon: Icons.Instagram,
     },
-    { key: "Telegram", label: "Telegram", placeholder: "t.me/sizning-nom" },
+    {
+      key: "Telegram",
+      label: "Telegram",
+      placeholder: "t.me/sizning-nom",
+      Icon: Icons.Telegram,
+    },
     {
       key: "Facebook",
       label: "Facebook",
       placeholder: "facebook.com/sizning-nom",
+      Icon: Icons.Facebook,
     },
     {
       key: "YouTube",
       label: "YouTube",
       placeholder: "youtube.com/@sizning-nom",
+      Icon: Icons.Youtube,
     },
-    { key: "TikTok", label: "TikTok", placeholder: "tiktok.com/@sizning-nom" },
+    {
+      key: "TikTok",
+      label: "TikTok",
+      placeholder: "tiktok.com/@sizning-nom",
+      Icon: Icons.TikTok,
+    },
     {
       key: "LinkedIn",
       label: "LinkedIn",
       placeholder: "linkedin.com/in/sizning-nom",
+      Icon: Icons.LinkedIn,
     },
-    { key: "Website", label: "Website", placeholder: "sizning-sayt.uz" },
+    {
+      key: "Website",
+      label: "Website",
+      placeholder: "sizning-sayt.uz",
+      Icon: Icons.Globe,
+    },
   ];
 
   const update = (key: string, value: string) => {
     onChange("socials", { ...data.socials, [key]: value });
   };
 
-  const socialEmojis: Record<string, string> = {
-    Instagram: "📸",
-    Telegram: "✈️",
-    Facebook: "👤",
-    YouTube: "▶️",
-    TikTok: "🎵",
-    LinkedIn: "💼",
-    Website: "🌐",
-  };
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div className="space-y-3">
-        {fields.map(({ key, label, placeholder }) => (
+        {fields.map(({ key, label, placeholder, Icon }) => (
           <div
             key={key}
             className="flex items-center gap-3 bg-white border border-zinc-200 rounded-2xl px-4 py-3 focus-within:border-zinc-400 focus-within:ring-2 focus-within:ring-zinc-100 transition-all"
           >
-            <span className="text-lg">{socialEmojis[key]}</span>
+            <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center flex-shrink-0 text-zinc-500">
+              <Icon />
+            </div>
             <span className="text-[13px] font-semibold text-zinc-700 w-20 shrink-0">
               {label}
             </span>
