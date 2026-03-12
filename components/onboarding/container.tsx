@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useCallback, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "@/components/icons";
 import {
@@ -469,11 +470,14 @@ const Step6 = ({
   );
 };
 
-const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
+const OnboardingWizard = ({ onFinish }: { onFinish: (slug: string) => void }) => {
+  const router = useRouter();
   const { t } = useI18n();
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState<OnboardingData>(INITIAL_DATA);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const update = useCallback(
     <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
@@ -490,11 +494,40 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
     return true;
   };
 
+  const submitProfile = async () => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch("/api/profiles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to save profile");
+      }
+
+      const result = await response.json();
+      onFinish(result.slug);
+      router.push(`/${result.slug}`);
+    } catch (error) {
+      console.error(error);
+      setSubmitError(t.onboarding.successDescription);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const goNext = () => {
     if (step < 6) {
       setDirection(1);
       setStep((s) => s + 1);
-    } else onFinish();
+      return;
+    }
+
+    void submitProfile();
   };
 
   const goPrev = () => {
@@ -635,6 +668,10 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
           </motion.div>
         </AnimatePresence>
 
+        {submitError ? (
+          <p className="mb-4 text-sm text-red-500">{submitError}</p>
+        ) : null}
+
         <div className="flex items-center justify-between pt-8 mt-8 border-t border-zinc-100">
           <button
             onClick={goPrev}
@@ -656,10 +693,10 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             )}
             <button
               onClick={goNext}
-              disabled={!canNext()}
+              disabled={!canNext() || isSubmitting}
               className="px-6 py-3 bg-zinc-900 text-white text-[14px] font-bold rounded-2xl shadow-lg shadow-zinc-900/15 hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5 disabled:hover:translate-y-0"
             >
-              {step === 6 ? t.onboarding.finish : t.onboarding.continue}
+              {isSubmitting ? "Saving..." : step === 6 ? t.onboarding.finish : t.onboarding.continue}
             </button>
           </div>
         </div>
@@ -702,6 +739,7 @@ const SuccessScreen = ({ onDashboard }: { onDashboard: () => void }) => {
 
 export function OnboardingContainer() {
   const [screen, setScreen] = useState<"onboarding" | "success">("onboarding");
+  const [lastSlug, setLastSlug] = useState<string>("");
 
   return (
     <AnimatePresence mode="wait">
@@ -713,7 +751,7 @@ export function OnboardingContainer() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <OnboardingWizard onFinish={() => setScreen("success")} />
+          <OnboardingWizard onFinish={(slug) => { setLastSlug(slug); setScreen("success"); }} />
         </motion.div>
       )}
       {screen === "success" && (
@@ -724,7 +762,7 @@ export function OnboardingContainer() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <SuccessScreen onDashboard={() => setScreen("onboarding")} />
+          <SuccessScreen onDashboard={() => (window.location.href = lastSlug ? `/${lastSlug}` : "/")} />
         </motion.div>
       )}
     </AnimatePresence>
