@@ -1,0 +1,457 @@
+export const locales = ["uz", "en", "ru"] as const;
+
+export type Locale = (typeof locales)[number];
+
+type TranslationDictionary = {
+  navbar: {
+    links: { label: string; id: string }[];
+    login: string;
+    start: string;
+    languageLabel: string;
+  };
+  hero: {
+    badge: string;
+    typedPhrase: string;
+    title: { line1: string; italic: string; line3: string; line4: string };
+    description: string;
+    primaryCta: string;
+    secondaryCta: string;
+    stats: { value: string; label: string }[];
+    profileCards: { name: string; handle: string; bio: string }[];
+    floatingReady: string;
+    floatingOnline: string;
+    floatingUptime: string;
+  };
+  trust: { caption: string };
+  features: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    items: { title: string; desc: string }[];
+  };
+  carousel: {
+    eyebrow: string;
+    titleLine1: string;
+    titleItalic: string;
+    steps: { icon: string; title: string; text: string }[];
+  };
+  templates: {
+    eyebrow: string;
+    title: string;
+    subtitle: string;
+    ctaPrimary: string;
+    ctaSecondary: string;
+    scrollHint: string;
+    items: { name: string; user: string; handle: string; bio: string }[];
+  };
+  howItWorks: {
+    eyebrow: string;
+    title: string;
+    steps: { n: string; title: string; desc: string; icon: string }[];
+  };
+  cta: {
+    titleLine1: string;
+    titleItalic: string;
+    titleLine3: string;
+    descriptionLine1: string;
+    descriptionLine2: string;
+    primary: string;
+    secondary: string;
+  };
+  faq: {
+    eyebrow: string;
+    title: string;
+    items: { q: string; a: string }[];
+  };
+  footer: {
+    description: string;
+    platformTitle: string;
+    companyTitle: string;
+    platformLinks: string[];
+    companyLinks: string[];
+    copyright: string;
+  };
+};
+
+export const translations: Record<Locale, TranslationDictionary> = {
+  uz: {
+    navbar: {
+      links: [
+        { label: "Imkoniyatlar", id: "imkoniyatlar" },
+        { label: "Shablonlar", id: "shablonlar" },
+        { label: "Qanday ishlaydi", id: "qanday-ishlaydi" },
+        { label: "FAQ", id: "faq" },
+      ],
+      login: "Kirish",
+      start: "Boshlash",
+      languageLabel: "Til",
+    },
+    hero: {
+      badge: "Mini-sayt yaratuvchi platforma",
+      typedPhrase: "sizning-nomingiz",
+      title: {
+        line1: "Shaxsiy",
+        italic: "sahifangizni",
+        line3: "bir necha",
+        line4: "daqiqada yarating",
+      },
+      description:
+        "Logo, havolalar, ish vaqti, ijtimoiy tarmoqlar va manzil ma'lumotlarini qo'shing — va tayyor mini-saytingizni darhol ishga tushiring.",
+      primaryCta: "Bepul boshlash",
+      secondaryCta: "Namuna ko'rish",
+      stats: [
+        { value: "500+", label: "Foydalanuvchilar" },
+        { value: "4.9★", label: "Reyting" },
+        { value: "2 min", label: "O'rtacha sozlash" },
+      ],
+      profileCards: [
+        {
+          name: "Alisher Nazarov",
+          handle: "alisher.uz",
+          bio: "UX dizayner va frontend dasturchi. 5 yillik tajriba.",
+        },
+        {
+          name: "Zulfiya's Studio",
+          handle: "zulfiya",
+          bio: "Kichik biznes uchun brending va dizayn.",
+        },
+      ],
+      floatingReady: "Sahifa tayyor!",
+      floatingOnline: "Onlayn",
+      floatingUptime: "24/7 ishlaydi",
+    },
+    trust: {
+      caption:
+        "Bizneslar, mutaxassislar va brendlar uchun qulay sahifa yaratuvchi platforma",
+    },
+    features: {
+      eyebrow: "Imkoniyatlar",
+      title: "Hamma narsa bir joyda",
+      subtitle: "Sahifangizni to'liq boshqarish uchun kerakli barcha vositalar",
+      items: [
+        { title: "Logo va brend ko'rinishi", desc: "Logotipingizni yuklang, rang va shrift tanlab, o'zingizga xos ko'rinish yarating." },
+        { title: "Ijtimoiy tarmoqlar havolalari", desc: "Instagram, Telegram, YouTube va boshqa tarmoqlarga havolalar qo'shing." },
+        { title: "Ish vaqti ko'rsatish", desc: "Har kunlik ish jadvali, bayram va ta'til kunlarini batafsil ko'rsating." },
+        { title: "Manzil havolalari", desc: "Google Maps, Yandex Maps va 2GIS havolalarini bir joyga jamlang." },
+        { title: "Telefon raqamlar", desc: "Bir yoki bir nechta aloqa raqamlarini qo'shing, tezkor qo'ng'iroq tugmasi bilan." },
+        { title: "Shaxsiy havola", desc: "biosahifa.uz/ismingiz ko'rinishida o'zingizning maxsus havolangizni oling." },
+        { title: "Tez sozlash", desc: "Ro'yxatdan o'tish va sozlashni 2–3 daqiqada yakunlang. Murakkab texnik bilim shart emas." },
+        { title: "Mobilga mos dizayn", desc: "Barcha qurilmalarda, jumladan smartfon va planshetlarda mukammal ko'rinadi." },
+      ],
+    },
+    carousel: {
+      eyebrow: "Qanday ishlaydi",
+      titleLine1: "Platformadan qanday",
+      titleItalic: "foydalaniladi",
+      steps: [
+        { icon: "🔐", title: "Tizimga kiring", text: "Email yoki telefon raqami orqali tez ro'yxatdan o'ting" },
+        { icon: "🖼️", title: "Logotip yuklang", text: "Kompaniya logotipi yoki shaxsiy rasmingizni qo'shing" },
+        { icon: "✏️", title: "Sarlavha va tavsif", text: "Kim ekanligingizni qisqacha va aniq ifodalang" },
+        { icon: "🔗", title: "Ijtimoiy tarmoqlar", text: "Barcha tarmoqlarga havolalarni bir joyga yig'ing" },
+        { icon: "🕐", title: "Ish vaqtini belgilang", text: "Dushanba–Juma: 9:00–18:00 formatida ko'rsating" },
+        { icon: "📍", title: "Manzil havolalari", text: "Google, Yandex, 2GIS xarita havolalarini joylashtiring" },
+        { icon: "🚀", title: "Sahifani chop eting", text: "Bir tugma bosamiz — sahifangiz darhol onlayn!" },
+        { icon: "📲", title: "Havolani ulashing", text: "biosahifa.uz/ismingiz — barcha joyda ulashing" },
+      ],
+    },
+    templates: {
+      eyebrow: "Shablonlar",
+      title: "Tayyor shablonlar",
+      subtitle: "Turli uslubdagi sahifalardan birini tanlang va o'zingizga moslashtiring",
+      ctaPrimary: "Bog'lanish",
+      ctaSecondary: "Portfolio ko'rish",
+      scrollHint: "↓ Davom etish uchun aylantiring",
+      items: [
+        { name: "Minimal Oq", user: "Aziza Karimova", handle: "aziza.design", bio: "UX/UI dizayner" },
+        { name: "Qora Premium", user: "Jasur Toshmatov", handle: "jasur.pro", bio: "Fotograf va videograf" },
+        { name: "Rang Gradient", user: "Malika Umarova", handle: "malika.uz", bio: "SMM mutaxassisi va bloger" },
+        { name: "Biznes Uslubi", user: "NexaCorp", handle: "nexacorp", bio: "IT kompaniya · Toshkent" },
+        { name: "Kreativ", user: "Studio Saodat", handle: "saodat.art", bio: "Grafik dizayner va illyustrator" },
+        { name: "Soft Pastel", user: "Nilufar Beauty", handle: "nilufar.beauty", bio: "Kosmetolog va vizajist" },
+        { name: "Dark Glass", user: "Cyber Pro", handle: "cyberpro", bio: "Kiberxavfsizlik mutaxassisi" },
+        { name: "Bold Creator", user: "UzContent", handle: "uzcontent", bio: "YouTuber · 200K obunachi" },
+      ],
+    },
+    howItWorks: {
+      eyebrow: "Jarayon",
+      title: "Qanday ishlaydi",
+      steps: [
+        { n: "01", title: "Ro'yxatdan o'ting", desc: "Email yoki telefon raqamingiz bilan tezda ro'yxatdan o'ting. 1 daqiqa ham ketmaydi.", icon: "📝" },
+        { n: "02", title: "Ma'lumotlaringizni kiriting", desc: "Logo, sarlavha, tavsif, telefon, manzil va barcha kerakli ma'lumotlarni qo'shing.", icon: "📋" },
+        { n: "03", title: "Dizaynni tanlang", desc: "Ko'plab tayyor shablonlardan birini tanlang va ranglar, shriftlarni o'zingizga moslang.", icon: "🎨" },
+        { n: "04", title: "Havolangizni ulashing", desc: "biosahifa.uz/ismingiz — bu havolani Instagram bio, kartochka yoki WhatsApp'ga qo'ying.", icon: "🔗" },
+      ],
+    },
+    cta: {
+      titleLine1: "Bugunoq o'z",
+      titleItalic: "sahifangizni",
+      titleLine3: "yarating",
+      descriptionLine1: "Biznesingiz yoki shaxsiy brendingiz uchun zamonaviy mini-saytni",
+      descriptionLine2: "bir necha daqiqada ishga tushiring.",
+      primary: "Boshlash",
+      secondary: "Demo ko'rish",
+    },
+    faq: {
+      eyebrow: "FAQ",
+      title: "Ko'p so'raladigan savollar",
+      items: [
+        { q: "Bu platforma nima uchun kerak?", a: "BioSahifa sizga o'z biznesingiz yoki shaxsiy brendingiz uchun professional mini-veb-sayt yaratish imkonini beradi. Barcha aloqa ma'lumotlari, havolalar va ish vaqti bitta sahifada — tez topiladi, qulay ulashiladi." },
+        { q: "Sahifani yaratish qancha vaqt oladi?", a: "O'rtacha 2–3 daqiqa. Ro'yxatdan o'tish, ma'lumot kiritish va sahifani nashr etish — barchasi juda oddiy va tezkor jarayon." },
+        { q: "Telefon va ijtimoiy tarmoqlarni qo'sha olamanmi?", a: "Ha, albatta. Instagram, Telegram, YouTube, Facebook, TikTok va boshqa ijtimoiy tarmoq havolalarini, shuningdek telefon raqamlarini qo'shish mumkin." },
+        { q: "Manzil havolalarini joylashtira olamanmi?", a: "Ha. Google Maps, Yandex Maps va 2GIS xarita havolalarini sahifangizga qo'shishingiz mumkin. Mijozlaringiz bir bosganda joylashuvingizga yo'l topa oladi." },
+        { q: "Dizaynni keyin o'zgartirish mumkinmi?", a: "Albatta. Sahifangizni istalgan vaqt tahrirlashingiz — shablon almashtirish, rang va matnlarni yangilash mumkin. O'zgarishlar darhol kuchga kiradi." },
+        { q: "Sahifam mobil qurilmalarda ishlayadimi?", a: "Ha, barcha shablonlar to'liq mobil moslashtirilgan. Smartfon, planshet va kompyuterda bir xil sifatli ko'rinadi." },
+      ],
+    },
+    footer: {
+      description: "Bizneslar va shaxslar uchun professional mini-veb-sayt yaratuvchi platforma.",
+      platformTitle: "Platforma",
+      companyTitle: "Kompaniya",
+      platformLinks: ["Imkoniyatlar", "Shablonlar", "Narxlar", "Blog"],
+      companyLinks: ["Biz haqimizda", "Aloqa", "Shartlar", "Maxfiylik"],
+      copyright: "© 2025 BioSahifa. Barcha huquqlar himoyalangan.",
+    },
+  },
+  en: {
+    navbar: {
+      links: [
+        { label: "Features", id: "imkoniyatlar" },
+        { label: "Templates", id: "shablonlar" },
+        { label: "How it works", id: "qanday-ishlaydi" },
+        { label: "FAQ", id: "faq" },
+      ],
+      login: "Log in",
+      start: "Get started",
+      languageLabel: "Language",
+    },
+    hero: {
+      badge: "Mini-site creation platform",
+      typedPhrase: "your-name",
+      title: { line1: "Create", italic: "your personal page", line3: "in just", line4: "a few minutes" },
+      description: "Add your logo, links, working hours, social media, and address details — then launch your mini-site instantly.",
+      primaryCta: "Start free",
+      secondaryCta: "View demo",
+      stats: [
+        { value: "500+", label: "Users" },
+        { value: "4.9★", label: "Rating" },
+        { value: "2 min", label: "Average setup" },
+      ],
+      profileCards: [
+        { name: "Alisher Nazarov", handle: "alisher.uz", bio: "UX designer and frontend developer. 5 years of experience." },
+        { name: "Zulfiya's Studio", handle: "zulfiya", bio: "Branding and design for small businesses." },
+      ],
+      floatingReady: "Page is ready!",
+      floatingOnline: "Online",
+      floatingUptime: "Works 24/7",
+    },
+    trust: { caption: "An easy page builder for businesses, professionals, and brands" },
+    features: {
+      eyebrow: "Features",
+      title: "Everything in one place",
+      subtitle: "All the tools you need to fully manage your page",
+      items: [
+        { title: "Logo and brand look", desc: "Upload your logo, choose colors and fonts, and create a unique style." },
+        { title: "Social media links", desc: "Add links to Instagram, Telegram, YouTube, and other networks." },
+        { title: "Display business hours", desc: "Show daily schedule, holidays, and days off in detail." },
+        { title: "Location links", desc: "Gather Google Maps, Yandex Maps, and 2GIS links in one place." },
+        { title: "Phone numbers", desc: "Add one or multiple contact numbers with a quick-call button." },
+        { title: "Personal URL", desc: "Get your custom URL like biosahifa.uz/yourname." },
+        { title: "Fast setup", desc: "Complete sign-up and setup in 2–3 minutes. No technical skills required." },
+        { title: "Mobile-first design", desc: "Looks perfect on all devices, including phones and tablets." },
+      ],
+    },
+    carousel: {
+      eyebrow: "How it works",
+      titleLine1: "How to use",
+      titleItalic: "the platform",
+      steps: [
+        { icon: "🔐", title: "Sign in", text: "Register quickly using your email or phone number" },
+        { icon: "🖼️", title: "Upload a logo", text: "Add your company logo or personal photo" },
+        { icon: "✏️", title: "Title and description", text: "Clearly describe who you are in a few words" },
+        { icon: "🔗", title: "Social media", text: "Collect links to all networks in one place" },
+        { icon: "🕐", title: "Set business hours", text: "Display in a format like Mon–Fri: 9:00–18:00" },
+        { icon: "📍", title: "Location links", text: "Add Google, Yandex, and 2GIS map links" },
+        { icon: "🚀", title: "Publish the page", text: "One click — your page goes live instantly!" },
+        { icon: "📲", title: "Share your link", text: "biosahifa.uz/yourname — share it everywhere" },
+      ],
+    },
+    templates: {
+      eyebrow: "Templates",
+      title: "Ready-made templates",
+      subtitle: "Choose a style and tailor it to your needs",
+      ctaPrimary: "Contact",
+      ctaSecondary: "View portfolio",
+      scrollHint: "↓ Scroll to continue",
+      items: [
+        { name: "Minimal White", user: "Aziza Karimova", handle: "aziza.design", bio: "UX/UI designer" },
+        { name: "Black Premium", user: "Jasur Toshmatov", handle: "jasur.pro", bio: "Photographer & videographer" },
+        { name: "Color Gradient", user: "Malika Umarova", handle: "malika.uz", bio: "SMM expert & blogger" },
+        { name: "Business Style", user: "NexaCorp", handle: "nexacorp", bio: "IT company · Tashkent" },
+        { name: "Creative", user: "Studio Saodat", handle: "saodat.art", bio: "Graphic designer & illustrator" },
+        { name: "Soft Pastel", user: "Nilufar Beauty", handle: "nilufar.beauty", bio: "Cosmetologist & makeup artist" },
+        { name: "Dark Glass", user: "Cyber Pro", handle: "cyberpro", bio: "Cybersecurity specialist" },
+        { name: "Bold Creator", user: "UzContent", handle: "uzcontent", bio: "YouTuber · 200K subscribers" },
+      ],
+    },
+    howItWorks: {
+      eyebrow: "Process",
+      title: "How it works",
+      steps: [
+        { n: "01", title: "Sign up", desc: "Register quickly with your email or phone number. It takes less than a minute.", icon: "📝" },
+        { n: "02", title: "Add your details", desc: "Add logo, headline, description, phone, address, and all required information.", icon: "📋" },
+        { n: "03", title: "Choose a design", desc: "Pick one of many ready templates and customize colors and fonts.", icon: "🎨" },
+        { n: "04", title: "Share your URL", desc: "biosahifa.uz/yourname — place it in Instagram bio, a card, or WhatsApp.", icon: "🔗" },
+      ],
+    },
+    cta: {
+      titleLine1: "Create",
+      titleItalic: "your page",
+      titleLine3: "today",
+      descriptionLine1: "Launch a modern mini-site for your business or personal brand",
+      descriptionLine2: "in just a few minutes.",
+      primary: "Get started",
+      secondary: "Watch demo",
+    },
+    faq: {
+      eyebrow: "FAQ",
+      title: "Frequently asked questions",
+      items: [
+        { q: "What is this platform for?", a: "BioSahifa helps you create a professional mini website for your business or personal brand. Contact details, links, and business hours all in one page — easy to find and share." },
+        { q: "How long does it take to create a page?", a: "On average, 2–3 minutes. Sign up, add your details, and publish — the whole process is simple and fast." },
+        { q: "Can I add phone numbers and social media?", a: "Yes, absolutely. You can add links to Instagram, Telegram, YouTube, Facebook, TikTok, and other platforms, as well as phone numbers." },
+        { q: "Can I add map links?", a: "Yes. You can add Google Maps, Yandex Maps, and 2GIS links to your page so clients can find your location with one click." },
+        { q: "Can I change the design later?", a: "Of course. You can edit your page anytime — switch templates and update colors or text. Changes apply instantly." },
+        { q: "Will my page work on mobile devices?", a: "Yes, all templates are fully mobile-responsive and look great on phones, tablets, and desktops." },
+      ],
+    },
+    footer: {
+      description: "A platform for creating professional mini websites for businesses and individuals.",
+      platformTitle: "Platform",
+      companyTitle: "Company",
+      platformLinks: ["Features", "Templates", "Pricing", "Blog"],
+      companyLinks: ["About", "Contact", "Terms", "Privacy"],
+      copyright: "© 2025 BioSahifa. All rights reserved.",
+    },
+  },
+  ru: {
+    navbar: {
+      links: [
+        { label: "Возможности", id: "imkoniyatlar" },
+        { label: "Шаблоны", id: "shablonlar" },
+        { label: "Как это работает", id: "qanday-ishlaydi" },
+        { label: "FAQ", id: "faq" },
+      ],
+      login: "Вход",
+      start: "Начать",
+      languageLabel: "Язык",
+    },
+    hero: {
+      badge: "Платформа для создания мини-сайтов",
+      typedPhrase: "ваше-имя",
+      title: { line1: "Создайте", italic: "свою страницу", line3: "всего за", line4: "несколько минут" },
+      description: "Добавьте логотип, ссылки, часы работы, соцсети и адрес — и запустите мини-сайт сразу.",
+      primaryCta: "Начать бесплатно",
+      secondaryCta: "Посмотреть демо",
+      stats: [
+        { value: "500+", label: "Пользователи" },
+        { value: "4.9★", label: "Рейтинг" },
+        { value: "2 мин", label: "Средняя настройка" },
+      ],
+      profileCards: [
+        { name: "Alisher Nazarov", handle: "alisher.uz", bio: "UX-дизайнер и frontend-разработчик. Опыт 5 лет." },
+        { name: "Zulfiya's Studio", handle: "zulfiya", bio: "Брендинг и дизайн для малого бизнеса." },
+      ],
+      floatingReady: "Страница готова!",
+      floatingOnline: "Онлайн",
+      floatingUptime: "Работает 24/7",
+    },
+    trust: { caption: "Удобный конструктор страниц для бизнеса, специалистов и брендов" },
+    features: {
+      eyebrow: "Возможности",
+      title: "Всё в одном месте",
+      subtitle: "Все нужные инструменты для полного управления страницей",
+      items: [
+        { title: "Логотип и стиль бренда", desc: "Загрузите логотип, выберите цвета и шрифты, создайте свой стиль." },
+        { title: "Ссылки на соцсети", desc: "Добавьте ссылки на Instagram, Telegram, YouTube и другие платформы." },
+        { title: "График работы", desc: "Покажите рабочие дни, праздники и выходные подробно." },
+        { title: "Ссылки на адрес", desc: "Соберите ссылки Google Maps, Yandex Maps и 2GIS в одном месте." },
+        { title: "Телефонные номера", desc: "Добавьте один или несколько номеров с кнопкой быстрого звонка." },
+        { title: "Персональная ссылка", desc: "Получите свой адрес вида biosahifa.uz/вашеимя." },
+        { title: "Быстрая настройка", desc: "Регистрация и настройка занимают 2–3 минуты. Технические знания не нужны." },
+        { title: "Адаптивный дизайн", desc: "Идеально выглядит на смартфонах, планшетах и компьютерах." },
+      ],
+    },
+    carousel: {
+      eyebrow: "Как это работает",
+      titleLine1: "Как пользоваться",
+      titleItalic: "платформой",
+      steps: [
+        { icon: "🔐", title: "Войдите в систему", text: "Быстро зарегистрируйтесь по email или номеру телефона" },
+        { icon: "🖼️", title: "Загрузите логотип", text: "Добавьте логотип компании или личное фото" },
+        { icon: "✏️", title: "Заголовок и описание", text: "Кратко и понятно расскажите, кто вы" },
+        { icon: "🔗", title: "Социальные сети", text: "Соберите ссылки на все платформы в одном месте" },
+        { icon: "🕐", title: "Укажите график", text: "Например: Пн–Пт: 9:00–18:00" },
+        { icon: "📍", title: "Ссылки на адрес", text: "Добавьте ссылки Google, Yandex и 2GIS" },
+        { icon: "🚀", title: "Опубликуйте страницу", text: "Один клик — и страница сразу онлайн!" },
+        { icon: "📲", title: "Поделитесь ссылкой", text: "biosahifa.uz/вашеимя — делитесь где угодно" },
+      ],
+    },
+    templates: {
+      eyebrow: "Шаблоны",
+      title: "Готовые шаблоны",
+      subtitle: "Выберите стиль и настройте его под себя",
+      ctaPrimary: "Связаться",
+      ctaSecondary: "Смотреть портфолио",
+      scrollHint: "↓ Прокрутите, чтобы продолжить",
+      items: [
+        { name: "Минимал Белый", user: "Aziza Karimova", handle: "aziza.design", bio: "UX/UI дизайнер" },
+        { name: "Черный Премиум", user: "Jasur Toshmatov", handle: "jasur.pro", bio: "Фотограф и видеограф" },
+        { name: "Цветной Градиент", user: "Malika Umarova", handle: "malika.uz", bio: "SMM-эксперт и блогер" },
+        { name: "Бизнес Стиль", user: "NexaCorp", handle: "nexacorp", bio: "IT-компания · Ташкент" },
+        { name: "Креатив", user: "Studio Saodat", handle: "saodat.art", bio: "Графический дизайнер и иллюстратор" },
+        { name: "Мягкий Пастель", user: "Nilufar Beauty", handle: "nilufar.beauty", bio: "Косметолог и визажист" },
+        { name: "Темное Стекло", user: "Cyber Pro", handle: "cyberpro", bio: "Специалист по кибербезопасности" },
+        { name: "Bold Creator", user: "UzContent", handle: "uzcontent", bio: "YouTube-автор · 200K подписчиков" },
+      ],
+    },
+    howItWorks: {
+      eyebrow: "Процесс",
+      title: "Как это работает",
+      steps: [
+        { n: "01", title: "Зарегистрируйтесь", desc: "Быстрая регистрация по email или телефону. Меньше минуты.", icon: "📝" },
+        { n: "02", title: "Добавьте данные", desc: "Укажите логотип, заголовок, описание, телефон, адрес и нужные данные.", icon: "📋" },
+        { n: "03", title: "Выберите дизайн", desc: "Выберите один из готовых шаблонов и настройте цвета и шрифты.", icon: "🎨" },
+        { n: "04", title: "Поделитесь ссылкой", desc: "biosahifa.uz/вашеимя — вставьте в Instagram bio, визитку или WhatsApp.", icon: "🔗" },
+      ],
+    },
+    cta: {
+      titleLine1: "Создайте",
+      titleItalic: "свою страницу",
+      titleLine3: "сегодня",
+      descriptionLine1: "Запустите современный мини-сайт для бизнеса или личного бренда",
+      descriptionLine2: "всего за несколько минут.",
+      primary: "Начать",
+      secondary: "Смотреть демо",
+    },
+    faq: {
+      eyebrow: "FAQ",
+      title: "Часто задаваемые вопросы",
+      items: [
+        { q: "Для чего нужна эта платформа?", a: "BioSahifa помогает создать профессиональный мини-сайт для бизнеса или личного бренда. Контакты, ссылки и график работы — всё на одной странице, удобно искать и делиться." },
+        { q: "Сколько времени занимает создание страницы?", a: "В среднем 2–3 минуты. Регистрация, заполнение данных и публикация проходят быстро и просто." },
+        { q: "Можно добавить телефон и соцсети?", a: "Да, конечно. Можно добавить ссылки на Instagram, Telegram, YouTube, Facebook, TikTok и другие платформы, а также номера телефонов." },
+        { q: "Можно добавить ссылки на карту?", a: "Да. Вы можете добавить ссылки Google Maps, Yandex Maps и 2GIS, чтобы клиент нашёл вас в один клик." },
+        { q: "Можно изменить дизайн позже?", a: "Конечно. Страницу можно редактировать в любое время — менять шаблон, цвета и тексты. Изменения применяются сразу." },
+        { q: "Страница будет работать на мобильных?", a: "Да, все шаблоны полностью адаптивны и отлично выглядят на смартфонах, планшетах и компьютерах." },
+      ],
+    },
+    footer: {
+      description: "Платформа для создания профессиональных мини-сайтов для бизнеса и частных специалистов.",
+      platformTitle: "Платформа",
+      companyTitle: "Компания",
+      platformLinks: ["Возможности", "Шаблоны", "Цены", "Блог"],
+      companyLinks: ["О нас", "Контакты", "Условия", "Конфиденциальность"],
+      copyright: "© 2025 BioSahifa. Все права защищены.",
+    },
+  },
+};

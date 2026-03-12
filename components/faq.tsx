@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown } from 'lucide-react'
 
 export default function FAQ() {
-  const [activeIndex, setActiveIndex] = useState(null)
+  const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
   const faqs = [
     {
