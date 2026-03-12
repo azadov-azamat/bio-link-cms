@@ -97,6 +97,9 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
                 <span className="truncate">{i18n.onboarding.googleMaps}</span>
               </div>
             )}
+            </div>
+            )}
+          
         {!compact && activeWebsites.length > 0 && (
           <div className="mt-2 mb-2 space-y-1.5">
             {activeWebsites.slice(0, 2).map((website, index) => (

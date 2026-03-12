@@ -639,7 +639,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
               />
             )}
             {step === 3 && (
-              <Step3 data={data} onChange={(k, v) => update(k, v as string)} />
+              <Step3 data={data} onChange={(k, v) => update(k, v)} />
             )}
             {step === 4 && (
               <Step4
