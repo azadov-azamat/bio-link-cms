@@ -1,25 +1,36 @@
-"use client";
+import dynamic from "next/dynamic";
 
 import { Navbar } from "@/components/navbar";
 import { HeroSection } from "@/components/hero-section";
 import { TrustSection } from "@/components/trust-section";
 import { FeaturesSection } from "@/components/features-section";
-import { CarouselSection } from "@/components/carousel-section";
-import { TemplatesSection } from "@/components/templates-section";
-import {
-  HowItWorksSection,
-  CTASection,
-  FAQSection,
-  Footer,
-} from "@/components/sections";
-import { useEffect } from "react";
+
+const CarouselSection = dynamic(
+  () => import("@/components/carousel-section").then((mod) => mod.CarouselSection),
+  {
+    loading: () => <div className="h-96 bg-[#FAFAF9]" />,
+  },
+);
+
+const TemplatesSection = dynamic(
+  () => import("@/components/templates-section").then((mod) => mod.TemplatesSection),
+  {
+    loading: () => <div className="h-96 bg-white" />,
+  },
+);
+
+const HowItWorksSection = dynamic(
+  () => import("@/components/sections").then((mod) => mod.HowItWorksSection),
+);
+const CTASection = dynamic(
+  () => import("@/components/sections").then((mod) => mod.CTASection),
+);
+const FAQSection = dynamic(
+  () => import("@/components/sections").then((mod) => mod.FAQSection),
+);
+const Footer = dynamic(() => import("@/components/sections").then((mod) => mod.Footer));
 
 export default function Home() {
-  useEffect(() => {
-    document.documentElement.style.scrollBehavior = "smooth";
-    document.body.style.fontFamily =
-      "'system-ui', '-apple-system', 'sans-serif'";
-  }, []);
   return (
     <div className="min-h-screen bg-[#FAFAF9]">
       <Navbar />
