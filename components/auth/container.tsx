@@ -256,7 +256,7 @@ const Step5 = ({
             className="flex items-center gap-3 bg-white border border-zinc-200 rounded-2xl px-4 py-3 focus-within:border-zinc-400 focus-within:ring-2 focus-within:ring-zinc-100 transition-all"
           >
             <span className="text-lg">{socialEmojis[key]}</span>
-            <span className="text-[13px] font-semibold text-zinc-700 w-20 flex-shrink-0">
+            <span className="text-[13px] font-semibold text-zinc-700 w-20 shrink-0">
               {label}
             </span>
             <input
@@ -414,7 +414,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
       {/* Top bar */}
       <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b border-zinc-100">
         <div className="max-w-4xl mx-auto px-5 h-14 flex items-center gap-5">
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <Icons.BrandIcon />
             <span className="text-[15px] font-bold text-zinc-900 hidden sm:block">
               BioSahifa
@@ -439,7 +439,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 flex-shrink-0">
+          <div className="hidden sm:flex items-center gap-1.5 shrink-0">
             {STEPS.map((s) => (
               <div
                 key={s.id}

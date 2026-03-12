@@ -16,7 +16,7 @@ export function AuthPage({ onAuth }: AuthPageProps) {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="w-full max-w-[400px]"
+          className="w-full max-w-100"
         >
           {/* Back link */}
           <a
@@ -70,7 +70,7 @@ export function AuthPage({ onAuth }: AuthPageProps) {
                 onClick={onAuth}
                 className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[14px] font-semibold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 ${bg}`}
               >
-                <span className="w-5 h-5 flex items-center justify-center flex-shrink-0">
+                <span className="w-5 h-5 flex items-center justify-center shrink-0">
                   {icon}
                 </span>
                 <span className="flex-1 text-center">{label}</span>
@@ -108,8 +108,8 @@ export function AuthPage({ onAuth }: AuthPageProps) {
             Namuna sahifa
           </p>
           {/* Sample profile preview */}
-          <div className="bg-white rounded-[32px] p-5 shadow-2xl mx-auto w-[220px]">
-            <div className="h-16 rounded-2xl bg-gradient-to-r from-violet-500 to-pink-500 mb-0 flex items-end pb-2 px-3">
+          <div className="bg-white rounded-4xl p-5 shadow-2xl mx-auto w-55">
+            <div className="h-16 rounded-2xl bg-linear-to-r from-violet-500 to-pink-500 mb-0 flex items-end pb-2 px-3">
               <div className="w-10 h-10 rounded-xl bg-white/30 flex items-center justify-center text-white font-black text-base shadow">
                 A
               </div>
@@ -124,7 +124,7 @@ export function AuthPage({ onAuth }: AuthPageProps) {
               {["Bog'lanish", "Portfolio", "Telegram"].map((b, i) => (
                 <div
                   key={b}
-                  className={`w-full py-2 px-3 rounded-xl text-center text-[11px] font-semibold mb-1.5 ${i === 0 ? "bg-gradient-to-r from-violet-500 to-pink-500 text-white" : "bg-zinc-100 text-zinc-600"}`}
+                  className={`w-full py-2 px-3 rounded-xl text-center text-[11px] font-semibold mb-1.5 ${i === 0 ? "bg-linear-to-r from-violet-500 to-pink-500 text-white" : "bg-zinc-100 text-zinc-600"}`}
                 >
                   {b}
                 </div>

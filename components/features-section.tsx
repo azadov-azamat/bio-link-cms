@@ -31,7 +31,7 @@ export function FeaturesSection() {
           <h2 className="text-[40px] lg:text-[52px] font-black tracking-tight text-zinc-900 leading-tight" style={{ fontFamily: "'Georgia', serif" }}>
             {t.features.title}
           </h2>
-          <p className="mt-4 text-[17px] text-zinc-500 max-w-[500px] mx-auto leading-relaxed">
+          <p className="mt-4 text-[17px] text-zinc-500 max-w-125 mx-auto leading-relaxed">
             {t.features.subtitle}
           </p>
         </motion.div>

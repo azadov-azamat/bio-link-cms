@@ -82,7 +82,7 @@ export function FAQSection() {
             <motion.div key={i} initial={{ opacity: 0, y: 15 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.07 }} className={`bg-white rounded-2xl border transition-all overflow-hidden ${open === i ? 'border-zinc-200 shadow-md' : 'border-zinc-100'}`}>
               <button className="w-full px-6 py-5 text-left flex items-center justify-between gap-4" onClick={() => setOpen(open === i ? null : i)}>
                 <span className="text-[15px] font-semibold text-zinc-900">{faq.q}</span>
-                <motion.span animate={{ rotate: open === i ? 180 : 0 }} transition={{ duration: 0.25 }} className="flex-shrink-0 text-zinc-400"><Icons.ChevronDown /></motion.span>
+                <motion.span animate={{ rotate: open === i ? 180 : 0 }} transition={{ duration: 0.25 }} className="shrink-0 text-zinc-400"><Icons.ChevronDown /></motion.span>
               </button>
               <AnimatePresence>
                 {open === i && (
@@ -108,7 +108,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2.5 mb-4"><Icons.Logo /><span className="text-[17px] font-bold">BioSahifa</span></div>
-            <p className="text-[14px] text-zinc-400 leading-relaxed max-w-[300px]">{t.footer.description}</p>
+            <p className="text-[14px] text-zinc-400 leading-relaxed max-w-75">{t.footer.description}</p>
             <div className="flex gap-3 mt-6">
               {[<Icons.Instagram key="i" />, <Icons.Telegram key="t" />, <Icons.Facebook key="f" />, <Icons.Youtube key="y" />].map((Icon, i) => (
                 <div key={i} className="w-9 h-9 rounded-xl bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center text-zinc-400 hover:text-white transition-all cursor-pointer">{Icon}</div>
