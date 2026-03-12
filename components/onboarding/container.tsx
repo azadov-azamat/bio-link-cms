@@ -13,6 +13,7 @@ import { PreviewCard } from "@/components/onboarding/preview-card";
 import { Step1 } from "@/components/onboarding/steps/one";
 import { Step2 } from "@/components/onboarding/steps/two";
 import { useI18n } from "@/components/i18n-provider";
+import { PlusIcon, Trash2Icon } from "lucide-react";
 
 const Step3 = ({
   data,
@@ -176,10 +177,13 @@ const Step5 = ({
   onChange,
 }: {
   data: OnboardingData;
-  onChange: (key: keyof OnboardingData, value: Record<string, string>) => void;
+  onChange: <K extends keyof OnboardingData>(
+    key: K,
+    value: OnboardingData[K],
+  ) => void;
 }) => {
   const { t } = useI18n();
-  const fields: {
+  const socialFields: {
     key: string;
     label: string;
     placeholder: string;
@@ -221,22 +225,32 @@ const Step5 = ({
       placeholder: t.onboarding.socialPlaceholders.LinkedIn,
       Icon: Icons.LinkedIn,
     },
-    {
-      key: "Website",
-      label: "Website",
-      placeholder: t.onboarding.socialPlaceholders.Website,
-      Icon: Icons.Globe,
-    },
   ];
 
-  const update = (key: string, value: string) => {
+  const updateSocial = (key: string, value: string) => {
     onChange("socials", { ...data.socials, [key]: value });
+  };
+
+  const updateWebsite = (index: number, patch: Partial<{ name: string; url: string }>) => {
+    const websites = data.websites.map((website, websiteIndex) =>
+      websiteIndex === index ? { ...website, ...patch } : website,
+    );
+    onChange("websites", websites);
+  };
+
+  const addWebsite = () => {
+    onChange("websites", [...data.websites, { name: "", url: "" }]);
+  };
+
+  const removeWebsite = (index: number) => {
+    const websites = data.websites.filter((_, websiteIndex) => websiteIndex !== index);
+    onChange("websites", websites.length ? websites : [{ name: "", url: "" }]);
   };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div className="space-y-3">
-        {fields.map(({ key, label, placeholder, Icon }) => (
+        {socialFields.map(({ key, label, placeholder, Icon }) => (
           <div
             key={key}
             className="flex items-center gap-3 bg-white border border-zinc-200 rounded-2xl px-4 py-3 focus-within:border-zinc-400 focus-within:ring-2 focus-within:ring-zinc-100 transition-all"
@@ -250,12 +264,66 @@ const Step5 = ({
             <input
               type="url"
               value={data.socials[key] || ""}
-              onChange={(e) => update(key, e.target.value)}
+              onChange={(e) => updateSocial(key, e.target.value)}
               placeholder={placeholder}
               className="flex-1 text-[13px] text-zinc-700 placeholder-zinc-300 bg-transparent focus:outline-none"
             />
           </div>
         ))}
+
+        <div className="pt-1 space-y-2.5">
+          {data.websites.map((website, index) => (
+            <div
+              key={`website-${index}`}
+              className="bg-white border border-zinc-200 rounded-2xl px-4 py-3"
+            >
+              <div className="flex items-center justify-between mb-2.5">
+                <div className="flex items-center gap-2 text-zinc-700">
+                  <div className="w-8 h-8 rounded-lg bg-zinc-100 flex items-center justify-center text-zinc-500">
+                    <Icons.Globe />
+                  </div>
+                  <span className="text-[13px] font-semibold">Website {index + 1}</span>
+                </div>
+                {data.websites.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeWebsite(index)}
+                    className="text-zinc-400 hover:text-red-500 transition-colors"
+                    aria-label={`Remove website ${index + 1}`}
+                  >
+                    <Trash2Icon className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <input
+                  type="text"
+                  value={website.name}
+                  onChange={(e) => updateWebsite(index, { name: e.target.value })}
+                  placeholder="Website nomi"
+                  className="w-full text-[13px] text-zinc-700 placeholder-zinc-300 bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-zinc-400"
+                />
+                <input
+                  type="url"
+                  value={website.url}
+                  onChange={(e) => updateWebsite(index, { url: e.target.value })}
+                  placeholder={t.onboarding.socialPlaceholders.Website}
+                  className="w-full text-[13px] text-zinc-700 placeholder-zinc-300 bg-zinc-50 border border-zinc-200 rounded-xl px-3 py-2.5 focus:outline-none focus:border-zinc-400"
+                />
+              </div>
+            </div>
+          ))}
+
+          <button
+            type="button"
+            onClick={addWebsite}
+            className="w-full inline-flex items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-300 px-4 py-2.5 text-[13px] font-semibold text-zinc-600 hover:border-zinc-400 hover:text-zinc-900 hover:bg-zinc-50 transition-all"
+          >
+            <PlusIcon className="w-4 h-4" />
+            Website qo'shish
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col items-center justify-center bg-zinc-50 rounded-2xl p-6 border border-zinc-100">
@@ -558,7 +626,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             {step === 5 && (
               <Step5
                 data={data}
-                onChange={(k, v) => update(k, v as Record<string, string>)}
+                onChange={update}
               />
             )}
             {step === 6 && (

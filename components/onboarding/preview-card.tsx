@@ -25,6 +25,7 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
   const activePhones = data.phones.filter((phone) => phone.trim());
   const hasContactInfo = !!data.workHours.trim() || activePhones.length > 0 || !!data.googleMaps.trim();
   const formattedWorkHours = data.workHours.replace(" - ", " — ");
+  const activeWebsites = data.websites.filter((website) => website.url.trim());
   const template = data.template;
   const theme =
     THEME_TEMPLATES[template as keyof typeof THEME_TEMPLATES] ||
@@ -46,9 +47,7 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
           />
         ) : (
           <div
-            className={`${
-              compact ? "w-8 h-8 text-sm" : "w-10 h-10 text-base"
-            } rounded-xl bg-white/20 flex items-center justify-center font-black ${theme.text}`}
+            className={`${compact ? "w-8 h-8 text-sm" : "w-10 h-10 text-base"} rounded-xl bg-white/20 flex items-center justify-center font-black ${theme.text}`}
           >
             {data.title ? data.title[0].toUpperCase() : "?"}
           </div>
@@ -65,9 +64,7 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
           </div>
         )}
         <div
-          className={`${compact ? "py-1.5" : "py-2"} px-3 rounded-xl ${theme.btn} ${
-            theme.btnText
-          } text-[10px] font-semibold text-center mb-1.5`}
+          className={`${compact ? "py-1.5" : "py-2"} px-3 rounded-xl ${theme.btn} ${theme.btnText} text-[10px] font-semibold text-center mb-1.5`}
         >
           {i18n.onboarding.contactButton}
         </div>
@@ -100,12 +97,27 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
                 <span className="truncate">{i18n.onboarding.googleMaps}</span>
               </div>
             )}
+        {!compact && activeWebsites.length > 0 && (
+          <div className="mt-2 mb-2 space-y-1.5">
+            {activeWebsites.slice(0, 2).map((website, index) => (
+              <div
+                key={`${website.url}-${index}`}
+                className={`w-full rounded-lg ${theme.btn} ${theme.btnText} px-2.5 py-1.5 flex items-center gap-1.5`}
+              >
+                <span className="shrink-0 scale-[0.7] opacity-90">
+                  <Icons.Globe />
+                </span>
+                <span className="text-[9px] font-semibold truncate">
+                  {website.name.trim() || website.url}
+                </span>
+              </div>
+            ))}
           </div>
         )}
 
         {!compact && activeSocials.length > 0 && (
-          <div className="flex gap-1.5 mt-2 flex-wrap">
-            {activeSocials.slice(0, 4).map(([key]) => {
+          <div className="flex gap-1.5 mt-2 flex-wrap justify-center">
+            {activeSocials.map(([key]) => {
               const Icon = SOCIAL_ICONS[key];
               return (
                 <div
