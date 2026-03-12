@@ -8,12 +8,8 @@ export interface OnboardingData {
   socials: Record<string, string>;
   websites: Array<{ name: string; url: string }>;
   workHours: string;
-  phone1: string;
-  phone2: string;
+  phones: string[];
   googleMaps: string;
-  yandexMaps: string;
-  twoGis: string;
-  note: string;
 }
 
 export const toSlug = (text: string): string =>
@@ -34,12 +30,8 @@ export const INITIAL_DATA: OnboardingData = {
   socials: {},
   websites: [{ name: "", url: "" }],
   workHours: "",
-  phone1: "",
-  phone2: "",
+  phones: [""],
   googleMaps: "",
-  yandexMaps: "",
-  twoGis: "",
-  note: "",
 };
 
 export const THEME_TEMPLATES = {

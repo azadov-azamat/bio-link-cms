@@ -112,12 +112,9 @@ type TranslationDictionary = {
     socialPlaceholders: Record<string, string>;
     contactButton: string;
     workHours: string;
-    phone1: string;
-    phone2: string;
+    phone: string;
     googleMaps: string;
     mapsPlaceholder: string;
-    note: string;
-    notePlaceholder: string;
     successTitle: string;
     successDescription: string;
     dashboard: string;
@@ -318,12 +315,9 @@ export const translations: Record<Locale, TranslationDictionary> = {
       },
       contactButton: "Bog'lanish",
       workHours: "Ish vaqti",
-      phone1: "Telefon 1",
-      phone2: "Telefon 2",
+      phone: "Telefon",
       googleMaps: "Google Maps",
       mapsPlaceholder: "Google Maps havolasi",
-      note: "Qo'shimcha eslatma",
-      notePlaceholder: "Qo'shimcha ma'lumot...",
       successTitle: "Tabriklayapman!",
       successDescription: "Sahifangiz tayyor. Endi dashboard'da tahrirlash va boshqarish mumkin.",
       dashboard: "Dashboard'ga o'tish",
@@ -505,12 +499,9 @@ export const translations: Record<Locale, TranslationDictionary> = {
       },
       contactButton: "Contact",
       workHours: "Working hours",
-      phone1: "Phone 1",
-      phone2: "Phone 2",
+      phone: "Phone",
       googleMaps: "Google Maps",
       mapsPlaceholder: "Google Maps link",
-      note: "Additional note",
-      notePlaceholder: "Additional information...",
       successTitle: "Congratulations!",
       successDescription: "Your page is ready. Now you can edit and manage it in the dashboard.",
       dashboard: "Go to dashboard",
@@ -692,12 +683,9 @@ export const translations: Record<Locale, TranslationDictionary> = {
       },
       contactButton: "Связаться",
       workHours: "График работы",
-      phone1: "Телефон 1",
-      phone2: "Телефон 2",
+      phone: "Телефон",
       googleMaps: "Google Maps",
       mapsPlaceholder: "Ссылка Google Maps",
-      note: "Дополнительная заметка",
-      notePlaceholder: "Дополнительная информация...",
       successTitle: "Поздравляем!",
       successDescription: "Ваша страница готова. Теперь вы можете редактировать и управлять ей в панели управления.",
       dashboard: "Перейти в дашборд",

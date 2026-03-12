@@ -16,11 +16,15 @@ const SOCIAL_ICONS: Record<string, () => any> = {
   YouTube: Icons.Youtube,
   TikTok: Icons.TikTok,
   LinkedIn: Icons.LinkedIn,
+  Website: Icons.Globe,
 };
 
 export function PreviewCard({ data, compact = false }: PreviewCardProps) {
   const { t: i18n } = useI18n();
   const activeSocials = Object.entries(data.socials).filter(([, v]) => v.trim());
+  const activePhones = data.phones.filter((phone) => phone.trim());
+  const hasContactInfo = !!data.workHours.trim() || activePhones.length > 0 || !!data.googleMaps.trim();
+  const formattedWorkHours = data.workHours.replace(" - ", " — ");
   const activeWebsites = data.websites.filter((website) => website.url.trim());
   const template = data.template;
   const theme =
@@ -29,7 +33,9 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
 
   return (
     <div
-      className={`${theme.bg} rounded-2xl overflow-hidden border border-white/10 shadow-xl ${compact ? "w-40" : "w-56"}`}
+      className={`${theme.bg} rounded-2xl overflow-hidden border border-white/10 shadow-xl ${
+        compact ? "w-40" : "w-56"
+      }`}
     >
       <div className={`${theme.header} ${compact ? "h-14" : "h-20"} flex items-end pb-2 px-3`}>
         {data.logo ? (
@@ -63,6 +69,34 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
           {i18n.onboarding.contactButton}
         </div>
 
+        {!compact && hasContactInfo && (
+          <div className="mt-2 space-y-1.5">
+            {data.workHours.trim() && (
+              <div className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-[9px] ${theme.btn} ${theme.btnText}`}>
+                <span className="scale-[0.55] opacity-90">
+                  <Icons.Clock />
+                </span>
+                <span className="font-semibold tracking-wide">{formattedWorkHours}</span>
+              </div>
+            )}
+
+            {activePhones.slice(0, 2).map((phone) => (
+              <div key={phone} className={`flex items-center gap-1.5 text-[9px] ${theme.sub}`}>
+                <span className="scale-[0.55] opacity-80">
+                  <Icons.Phone />
+                </span>
+                <span className="truncate">{phone}</span>
+              </div>
+            ))}
+
+            {data.googleMaps.trim() && (
+              <div className={`flex items-center gap-1.5 text-[9px] ${theme.sub}`}>
+                <span className="scale-[0.55] opacity-80">
+                  <Icons.MapPin />
+                </span>
+                <span className="truncate">{i18n.onboarding.googleMaps}</span>
+              </div>
+            )}
         {!compact && activeWebsites.length > 0 && (
           <div className="mt-2 mb-2 space-y-1.5">
             {activeWebsites.slice(0, 2).map((website, index) => (

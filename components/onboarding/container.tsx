@@ -20,7 +20,7 @@ const Step3 = ({
   onChange,
 }: {
   data: OnboardingData;
-  onChange: (key: keyof OnboardingData, value: string) => void;
+  onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
 }) => {
   const templates = Object.keys(THEME_TEMPLATES);
 
@@ -341,9 +341,50 @@ const Step6 = ({
   onChange,
 }: {
   data: OnboardingData;
-  onChange: (key: keyof OnboardingData, value: string) => void;
+  onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
 }) => {
   const { t } = useI18n();
+
+  const updatePhone = (index: number, value: string) => {
+    const nextPhones = [...data.phones];
+    nextPhones[index] = value;
+    onChange("phones", nextPhones);
+  };
+
+  const addPhone = () => {
+    if (data.phones.length >= 3) return;
+    onChange("phones", [...data.phones, ""]);
+  };
+
+  const removePhone = (index: number) => {
+    const nextPhones = data.phones.filter((_, i) => i !== index);
+    onChange("phones", nextPhones.length ? nextPhones : [""]);
+  };
+
+  const parseWorkHours = (value: string) => {
+    const normalized = value.trim();
+    if (!normalized) return { start: "", end: "" };
+
+    const [rawStart = "", rawEnd = ""] = normalized.split("-");
+    const start = rawStart.trim();
+    const end = rawEnd.trim();
+
+    if (!normalized.includes("-")) {
+      return { start: normalized, end: "" };
+    }
+
+    return { start, end };
+  };
+
+  const buildWorkHours = (start: string, end: string) => {
+    if (!start && !end) return "";
+    if (start && end) return `${start} - ${end}`;
+    if (start) return start;
+    return `- ${end}`;
+  };
+
+  const { start: startTime, end: endTime } = parseWorkHours(data.workHours);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
       <div className="space-y-3">
@@ -351,39 +392,57 @@ const Step6 = ({
           <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
             {t.onboarding.workHours}
           </label>
-          <input
-            type="text"
-            value={data.workHours}
-            onChange={(e) => onChange("workHours", e.target.value)}
-            placeholder="9:00 - 18:00"
-            className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
-          />
+          <div className="grid grid-cols-2 gap-3">
+            <input
+              type="time"
+              value={startTime}
+              onChange={(e) => onChange("workHours", buildWorkHours(e.target.value, endTime))}
+              className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
+            />
+            <input
+              type="time"
+              value={endTime}
+              onChange={(e) => onChange("workHours", buildWorkHours(startTime, e.target.value))}
+              className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
+            />
+          </div>
         </div>
 
-        <div>
-          <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            {t.onboarding.phone1}
-          </label>
-          <input
-            type="tel"
-            value={data.phone1}
-            onChange={(e) => onChange("phone1", e.target.value)}
-            placeholder="+998 90 123-45-67"
-            className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
-          />
-        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <label className="block text-[13px] font-semibold text-zinc-700">
+              {t.onboarding.phone}
+            </label>
+            <button
+              type="button"
+              onClick={addPhone}
+              disabled={data.phones.length >= 3}
+              className="w-7 h-7 rounded-full border border-zinc-300 text-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              +
+            </button>
+          </div>
 
-        <div>
-          <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            {t.onboarding.phone2}
-          </label>
-          <input
-            type="tel"
-            value={data.phone2}
-            onChange={(e) => onChange("phone2", e.target.value)}
-            placeholder="+998 90 987-65-43"
-            className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
-          />
+          {data.phones.map((phone, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => updatePhone(index, e.target.value)}
+                placeholder="+998 90 123-45-67"
+                className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
+              />
+              {data.phones.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removePhone(index)}
+                  className="w-8 h-8 rounded-full border border-zinc-200 text-zinc-500 hover:text-red-500 hover:border-red-200 transition-colors"
+                >
+                  ×
+                </button>
+              )}
+            </div>
+          ))}
         </div>
 
         <div>
@@ -396,19 +455,6 @@ const Step6 = ({
             onChange={(e) => onChange("googleMaps", e.target.value)}
             placeholder={t.onboarding.mapsPlaceholder}
             className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all"
-          />
-        </div>
-
-        <div>
-          <label className="block text-[13px] font-semibold text-zinc-700 mb-2">
-            {t.onboarding.note}
-          </label>
-          <textarea
-            value={data.note}
-            onChange={(e) => onChange("note", e.target.value)}
-            rows={2}
-            placeholder={t.onboarding.notePlaceholder}
-            className="w-full px-4 py-3 rounded-2xl border border-zinc-200 bg-white text-[14px] text-zinc-900 placeholder-zinc-400 focus:outline-none focus:border-zinc-400 focus:ring-2 focus:ring-zinc-100 transition-all resize-none"
           />
         </div>
       </div>
@@ -584,7 +630,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
               />
             )}
             {step === 6 && (
-              <Step6 data={data} onChange={(k, v) => update(k, v as string)} />
+              <Step6 data={data} onChange={update} />
             )}
           </motion.div>
         </AnimatePresence>
