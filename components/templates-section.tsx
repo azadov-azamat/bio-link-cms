@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { Icons } from './icons';
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { Icons } from "./icons";
 
 interface Template {
   name: string;
@@ -30,10 +30,9 @@ export function TemplatesSection() {
     offset: ["start start", "end end"],
   });
 
-  const templates: Template[] = [
+  const templates = [
     {
       name: "Minimal Oq",
-      desc: "Toza, minimal dizayn",
       user: "Aziza Karimova",
       handle: "aziza.design",
       bio: "UX/UI Designer",
@@ -50,7 +49,6 @@ export function TemplatesSection() {
     },
     {
       name: "Qora Premium",
-      desc: "Elegant qora uslub",
       user: "Jasur Toshmatov",
       handle: "jasur.pro",
       bio: "Fotograf & Videograf",
@@ -64,11 +62,9 @@ export function TemplatesSection() {
       border: "border border-zinc-800",
       avatarBg: "bg-zinc-700",
       avatarText: "text-white",
-      gradient: "from-zinc-700 to-zinc-900",
     },
     {
       name: "Rang Gradient",
-      desc: "Quvnoq rang sxemasi",
       user: "Malika Umarova",
       handle: "malika.uz",
       bio: "SMM ekspert & Blogger",
@@ -85,7 +81,6 @@ export function TemplatesSection() {
     },
     {
       name: "Biznes Uslubi",
-      desc: "Korporativ, jiddiy ko'rinish",
       user: "NexaCorp",
       handle: "nexacorp",
       bio: "IT kompaniya · Toshkent",
@@ -102,7 +97,6 @@ export function TemplatesSection() {
     },
     {
       name: "Kreativ",
-      desc: "San'atkorlar uchun mo'ljallangan",
       user: "Studio Saodat",
       handle: "saodat.art",
       bio: "Grafik dizayner & Illustrator",
@@ -119,7 +113,6 @@ export function TemplatesSection() {
     },
     {
       name: "Soft Pastel",
-      desc: "Yumshoq va iliq ranglar",
       user: "Nilufar Beauty",
       handle: "nilufar.beauty",
       bio: "Kosmetolog & Vizajist",
@@ -136,15 +129,14 @@ export function TemplatesSection() {
     },
     {
       name: "Dark Glass",
-      desc: "Zamonaviy glassmorphism",
       user: "Cyber Pro",
       handle: "cyberpro",
       bio: "Kiberxavfsizlik mutaxassisi",
       bg: "bg-gradient-to-br from-slate-900 via-purple-950 to-slate-900",
-      headerBg: "bg-white/5 backdrop-blur",
+      headerBg: "bg-white/5",
       textColor: "text-white",
       subText: "text-purple-300",
-      btnBg: "bg-white/10 backdrop-blur border border-white/20",
+      btnBg: "bg-white/10 border border-white/20",
       btnText: "text-white",
       secondBtn: "bg-white/5 text-white/70 border border-white/10",
       border: "border border-white/10",
@@ -153,7 +145,6 @@ export function TemplatesSection() {
     },
     {
       name: "Bold Creator",
-      desc: "Kontent yaratuvchilar uchun",
       user: "UzContent",
       handle: "uzcontent",
       bio: "YouTuber · 200K obunachi",
@@ -170,12 +161,42 @@ export function TemplatesSection() {
     },
   ];
 
-  const x = useTransform(
+  const CARD_WIDTH = 260;
+  const GAP = 24;
+  const CARD_STEP = CARD_WIDTH + GAP;
+
+  // scroll progress → center index (0 dan templates.length-1 gacha)
+  const activeIndexMotion = useTransform(
     scrollYProgress,
     [0, 1],
-    ["0%", `-${(templates.length - 2.2) * 280}px`],
+    [0, templates.length - 1],
   );
-  const xSpring = useSpring(x, { stiffness: 80, damping: 20 });
+
+  // scroll progress → translateX
+  // Birinchi karta o'rtada turishi uchun offset hisobi:
+  // center = window/2 - CARD_WIDTH/2
+  // keyin har bir scroll stepda CARD_STEP ga chapga siljiydi
+  const [viewportW, setViewportW] = useState(1280);
+  useEffect(() => {
+    const update = () => setViewportW(window.innerWidth);
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
+  }, []);
+
+  const startX = viewportW / 2 - CARD_WIDTH / 2;
+  const endX = startX - (templates.length - 1) * CARD_STEP;
+
+  const rawX = useTransform(scrollYProgress, [0, 1], [startX, endX]);
+  const x = useSpring(rawX, { stiffness: 80, damping: 20 });
+
+  // Active index (rounded) — scale effekti uchun
+  const [activeIndex, setActiveIndex] = useState(0);
+  useEffect(() => {
+    return activeIndexMotion.on("change", (v) => {
+      setActiveIndex(Math.round(v));
+    });
+  }, [activeIndexMotion]);
 
   return (
     <section
@@ -184,15 +205,15 @@ export function TemplatesSection() {
       style={{ height: `${templates.length * 100}vh` }}
       className="relative"
     >
-      <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
-        <div className="max-w-7xl mx-auto px-5 lg:px-8 mb-12">
+      <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden bg-[#FAFAF9]">
+        {/* Header */}
+        <div className="text-center mb-12 px-5">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center"
           >
-            <p className="text-[13px] font-semibold text-zinc-400 uppercase tracking-widest mb-4">
+            <p className="text-[13px] font-semibold text-zinc-400 uppercase tracking-widest mb-3">
               Shablonlar
             </p>
             <h2
@@ -201,99 +222,118 @@ export function TemplatesSection() {
             >
               Tayyor shablonlar
             </h2>
-            <p className="mt-3 text-[17px] text-zinc-500">
+            <p className="mt-3 text-[16px] text-zinc-500">
               Turli uslubdagi sahifalardan birini tanlang va o'zingizga
               moslashtiring
             </p>
           </motion.div>
         </div>
 
-        <div className="overflow-hidden pb-5">
+        {/* Cards track */}
+        <div className="relative h-[500px] overflow-visible">
           <motion.div
-            style={{ x: xSpring }}
-            className="flex gap-6 pl-[max(40px,calc((100vw-1280px)/2+40px))]"
+            className="absolute top-0 flex items-center"
+            style={{ x, gap: GAP }}
           >
-            {templates.map((t, i) => (
-              <div
-                key={i}
-                className={`shrink-0 w-65 h-120 rounded-4xl overflow-hidden shadow-2xl ${t.bg} ${t.border} flex flex-col`}
-              >
-                {/* Phone header */}
-                <div
-                  className={`${t.headerBg} h-28 flex items-end pb-3 px-4 relative`}
+            {templates.map((t, i) => {
+              const isActive = i === activeIndex;
+              return (
+                <motion.div
+                  key={i}
+                  animate={{
+                    scale: isActive ? 1.12 : 0.88,
+                    opacity: isActive ? 1 : 0.55,
+                    y: isActive ? -8 : 0,
+                  }}
+                  transition={{ type: "spring", stiffness: 200, damping: 24 }}
+                  style={{ width: CARD_WIDTH, flexShrink: 0 }}
+                  className={`h-[460px] rounded-[32px] overflow-hidden shadow-2xl ${t.bg} ${t.border} flex flex-col`}
                 >
-                  <div className="absolute top-4 left-0 right-0 flex justify-center gap-1">
-                    <div className="w-8 h-1 rounded-full bg-white/30" />
-                  </div>
+                  {/* Phone header bar */}
                   <div
-                    className={`w-12 h-12 rounded-2xl ${t.avatarBg} flex items-center justify-center text-[18px] font-black ${t.avatarText} shadow-md`}
+                    className={`${t.headerBg} h-28 flex items-end pb-3 px-4 relative`}
                   >
-                    {t.user[0]}
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="flex-1 p-4">
-                  <div
-                    className={`text-[14px] font-bold mb-0.5 ${t.textColor}`}
-                  >
-                    {t.user}
-                  </div>
-                  <div className={`text-[11px] mb-1 ${t.subText}`}>
-                    @{t.handle}
-                  </div>
-                  <div className={`text-[11px] mb-4 ${t.subText}`}>{t.bio}</div>
-
-                  {/* Buttons */}
-                  <div className="space-y-2 mb-4">
-                    {["Bog'lanish", "Portfolio ko'rish"].map((btn, bi) => (
-                      <div
-                        key={bi}
-                        className={`w-full py-2.5 px-4 rounded-xl text-center text-[11px] font-semibold ${
-                          bi === 0 ? `${t.btnBg} ${t.btnText}` : t.secondBtn
-                        }`}
-                      >
-                        {btn}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Social icons */}
-                  <div className="flex gap-2 justify-center mb-4">
-                    {[
-                      <Icons.Instagram key="i" />,
-                      <Icons.Telegram key="t" />,
-                      <Icons.Facebook key="f" />,
-                    ].map((Icon, ii) => (
-                      <div
-                        key={ii}
-                        className={`w-8 h-8 rounded-lg flex items-center justify-center ${t.secondBtn}`}
-                      >
-                        {Icon}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Label */}
-                  <div className="text-center">
-                    <span
-                      className={`text-[10px] font-bold uppercase tracking-widest ${t.subText}`}
+                    <div className="absolute top-3 left-0 right-0 flex justify-center">
+                      <div className="w-8 h-1 rounded-full bg-white/30" />
+                    </div>
+                    <div
+                      className={`w-12 h-12 rounded-2xl ${t.avatarBg} flex items-center justify-center text-[18px] font-black ${t.avatarText} shadow-md`}
                     >
-                      {t.name}
-                    </span>
+                      {t.user[0]}
+                    </div>
                   </div>
-                </div>
-              </div>
-            ))}
+
+                  {/* Content */}
+                  <div className="flex-1 p-4 flex flex-col">
+                    <div
+                      className={`text-[14px] font-bold mb-0.5 ${t.textColor}`}
+                    >
+                      {t.user}
+                    </div>
+                    <div className={`text-[11px] mb-0.5 ${t.subText}`}>
+                      @{t.handle}
+                    </div>
+                    <div className={`text-[11px] mb-4 ${t.subText}`}>
+                      {t.bio}
+                    </div>
+
+                    <div className="space-y-2 mb-4">
+                      {["Bog'lanish", "Portfolio ko'rish"].map((btn, bi) => (
+                        <div
+                          key={bi}
+                          className={`w-full py-2.5 px-4 rounded-xl text-center text-[11px] font-semibold ${
+                            bi === 0 ? `${t.btnBg} ${t.btnText}` : t.secondBtn
+                          }`}
+                        >
+                          {btn}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="flex gap-2 justify-center mb-3">
+                      {[
+                        <Icons.Instagram key="i" />,
+                        <Icons.Telegram key="t" />,
+                        <Icons.Facebook key="f" />,
+                      ].map((s, ind) => (
+                        <div
+                          key={ind}
+                          className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold ${t.secondBtn}`}
+                        >
+                          {s}
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="text-center mt-auto">
+                      <span
+                        className={`text-[10px] font-bold uppercase tracking-widest ${t.subText}`}
+                      >
+                        {t.name}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </div>
 
-        {/* Scroll hint */}
-        <div className="text-center mt-8">
-          <p className="text-[12px] text-zinc-400 font-medium">
-            ↓ Davom etish uchun aylantiring
-          </p>
+        {/* Progress dots */}
+        <div className="flex justify-center gap-2 mt-8">
+          {templates.map((_, i) => (
+            <div
+              key={i}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === activeIndex ? "w-6 bg-zinc-900" : "w-1.5 bg-zinc-300"
+              }`}
+            />
+          ))}
         </div>
+
+        <p className="text-center text-[12px] text-zinc-400 mt-4">
+          ↓ Davom etish uchun aylantiring
+        </p>
       </div>
     </section>
   );
