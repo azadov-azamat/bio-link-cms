@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 export function CarouselSection() {
@@ -50,12 +50,11 @@ export function CarouselSection() {
   const CARD_WIDTH = 240 + 16; // card width + gap
   const TOTAL_WIDTH = CARD_WIDTH * steps.length;
 
-  const offsetRef = useRef(0);
-  const speedRef = useRef(1); // px per frame, normal tezlik
-  const targetSpeedRef = useRef(1);
-  const rafRef = useRef(null);
-  const trackRef = useRef(null);
-  const isHoveringRef = useRef(false);
+  const offsetRef = useRef<number>(0);
+  const speedRef = useRef<number>(1); // px per frame, normal tezlik
+  const targetSpeedRef = useRef<number>(1);
+  const rafRef = useRef<number | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const animate = () => {
@@ -72,21 +71,23 @@ export function CarouselSection() {
       if (trackRef.current) {
         trackRef.current.style.transform = `translateX(-${offsetRef.current}px)`;
       }
-s
+
       rafRef.current = requestAnimationFrame(animate);
     };
 
     rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
+    return () => {
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
   }, [TOTAL_WIDTH]);
 
   const handleMouseEnter = () => {
-    isHoveringRef.current = true;
     targetSpeedRef.current = 0; // asta sekin to'xtaydi
   };
 
   const handleMouseLeave = () => {
-    isHoveringRef.current = false;
     targetSpeedRef.current = 1; // asta sekin qayta boshlaydi
   };
 
