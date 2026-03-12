@@ -21,9 +21,14 @@ const SOCIAL_ICONS: Record<string, () => any> = {
 
 export function PreviewCard({ data, compact = false }: PreviewCardProps) {
   const { t: i18n } = useI18n();
-  const activeSocials = Object.entries(data.socials).filter(([, v]) => v.trim());
+  const activeSocials = Object.entries(data.socials).filter(([, v]) =>
+    v.trim(),
+  );
   const activePhones = data.phones.filter((phone) => phone.trim());
-  const hasContactInfo = !!data.workHours.trim() || activePhones.length > 0 || !!data.googleMaps.trim();
+  const hasContactInfo =
+    !!data.workHours.trim() ||
+    activePhones.length > 0 ||
+    !!data.googleMaps.trim();
   const formattedWorkHours = data.workHours.replace(" - ", " — ");
   const activeWebsites = data.websites.filter((website) => website.url.trim());
   const template = data.template;
@@ -37,7 +42,9 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
         compact ? "w-40" : "w-56"
       }`}
     >
-      <div className={`${theme.header} ${compact ? "h-14" : "h-20"} flex items-end pb-2 px-3`}>
+      <div
+        className={`${theme.header} ${compact ? "h-14" : "h-20"} flex items-end pb-2 px-3`}
+      >
         {data.logo ? (
           <img
             src={data.logo}
@@ -55,7 +62,9 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
       </div>
 
       <div className={`${compact ? "p-2.5" : "p-3"}`}>
-        <div className={`${compact ? "text-[11px]" : "text-[13px]"} font-bold ${theme.text} truncate`}>
+        <div
+          className={`${compact ? "text-[11px]" : "text-[13px]"} font-bold ${theme.text} truncate`}
+        >
           {data.title || `${i18n.onboarding.titleLabel}...`}
         </div>
         {!compact && (
@@ -72,16 +81,23 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
         {!compact && hasContactInfo && (
           <div className="mt-2 space-y-1.5">
             {data.workHours.trim() && (
-              <div className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-[9px] ${theme.btn} ${theme.btnText}`}>
+              <div
+                className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-[9px] ${theme.btn} ${theme.btnText}`}
+              >
                 <span className="scale-[0.55] opacity-90">
                   <Icons.Clock />
                 </span>
-                <span className="font-semibold tracking-wide">{formattedWorkHours}</span>
+                <span className="font-semibold tracking-wide">
+                  {formattedWorkHours}
+                </span>
               </div>
             )}
 
             {activePhones.slice(0, 2).map((phone) => (
-              <div key={phone} className={`flex items-center gap-1.5 text-[9px] ${theme.sub}`}>
+              <div
+                key={phone}
+                className={`flex items-center gap-1.5 text-[9px] ${theme.sub}`}
+              >
                 <span className="scale-[0.55] opacity-80">
                   <Icons.Phone />
                 </span>
@@ -90,13 +106,18 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
             ))}
 
             {data.googleMaps.trim() && (
-              <div className={`flex items-center gap-1.5 text-[9px] ${theme.sub}`}>
+              <div
+                className={`flex items-center gap-1.5 text-[9px] ${theme.sub}`}
+              >
                 <span className="scale-[0.55] opacity-80">
                   <Icons.MapPin />
                 </span>
                 <span className="truncate">{i18n.onboarding.googleMaps}</span>
               </div>
             )}
+          </div>
+        )}
+
         {!compact && activeWebsites.length > 0 && (
           <div className="mt-2 mb-2 space-y-1.5">
             {activeWebsites.slice(0, 2).map((website, index) => (
