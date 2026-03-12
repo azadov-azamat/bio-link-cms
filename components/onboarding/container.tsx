@@ -3,13 +3,15 @@
 import { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "@/components/icons";
-import { INITIAL_DATA, OnboardingData, THEME_TEMPLATES, toSlug } from "./utils";
-import { PreviewCard } from "./preview-card";
-import { Step1 } from "./steps/one";
-import { Step2 } from "./steps/two";
-import { AuthPage } from "./page";
-
-type Screen = "auth" | "onboarding" | "success";
+import {
+  INITIAL_DATA,
+  OnboardingData,
+  THEME_TEMPLATES,
+  toSlug,
+} from "@/components/onboarding/utils";
+import { PreviewCard } from "@/components/onboarding/preview-card";
+import { Step1 } from "@/components/onboarding/steps/one";
+import { Step2 } from "@/components/onboarding/steps/two";
 
 const STEPS = [
   {
@@ -589,22 +591,11 @@ const SuccessScreen = ({ onDashboard }: { onDashboard: () => void }) => {
   );
 };
 
-export function AuthContainer() {
-  const [screen, setScreen] = useState<Screen>("auth");
+export function OnboardingContainer() {
+  const [screen, setScreen] = useState<"onboarding" | "success">("onboarding");
 
   return (
     <AnimatePresence mode="wait">
-      {screen === "auth" && (
-        <motion.div
-          key="auth"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <AuthPage onAuth={() => setScreen("onboarding")} />
-        </motion.div>
-      )}
       {screen === "onboarding" && (
         <motion.div
           key="onboarding"
@@ -624,7 +615,7 @@ export function AuthContainer() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <SuccessScreen onDashboard={() => setScreen("auth")} />
+          <SuccessScreen onDashboard={() => setScreen("onboarding")} />
         </motion.div>
       )}
     </AnimatePresence>
