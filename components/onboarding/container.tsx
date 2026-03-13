@@ -3,6 +3,9 @@
 import React, { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMutation } from "@tanstack/react-query";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { Icons } from "@/components/icons";
 import {
   INITIAL_DATA,
@@ -475,15 +478,92 @@ const OnboardingWizard = ({ onFinish }: { onFinish: (slug: string) => void }) =>
   const { t } = useI18n();
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
-  const [data, setData] = useState<OnboardingData>(INITIAL_DATA);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const onboardingSchema = Yup.object({
+    source: Yup.string().trim().required("Source is required"),
+    platforms: Yup.array().of(Yup.string().trim()).min(1, "Select at least one platform"),
+    template: Yup.string().trim().required("Template is required"),
+    title: Yup.string().trim().required("Title is required"),
+    socials: Yup.object().test("social-links", "Invalid social link", (value) => {
+      if (!value) return true;
+      return Object.values(value).every((url) => !url || Yup.string().url().isValidSync(url));
+    }),
+    websites: Yup.array().of(
+      Yup.object({
+        name: Yup.string().trim(),
+        url: Yup.string().trim().test("website-url", "Invalid website URL", (value) => {
+          if (!value) return true;
+          return Yup.string().url().isValidSync(value);
+        }),
+      }),
+    ),
+    googleMaps: Yup.string().trim().test("map-url", "Invalid Google Maps URL", (value) => {
+      if (!value) return true;
+      return Yup.string().url().isValidSync(value);
+    }),
+  });
+
+  const sanitizePayload = (values: OnboardingData): OnboardingData => ({
+    ...values,
+    title: values.title.trim(),
+    description: values.description.trim(),
+    workHours: values.workHours.trim(),
+    googleMaps: values.googleMaps.trim(),
+    socials: Object.fromEntries(
+      Object.entries(values.socials)
+        .map(([key, value]) => [key, value.trim()])
+        .filter(([, value]) => value.length > 0),
+    ),
+    websites: values.websites
+      .map((website) => ({ name: website.name.trim(), url: website.url.trim() }))
+      .filter((website) => website.name || website.url),
+    phones: values.phones.map((phone) => phone.trim()).filter(Boolean),
+  });
+
+  const mutation = useMutation({
+    mutationFn: async (payload: OnboardingData) => {
+      const response = await fetch("/api/profiles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok) {
+        throw new Error(result?.error ?? "Failed to save profile");
+      }
+
+      return result as { slug: string };
+    },
+    onSuccess: (result) => {
+      onFinish(result.slug);
+      router.push(`/${result.slug}`);
+    },
+    onError: (error) => {
+      console.error(error);
+      setSubmitError(error instanceof Error ? error.message : t.onboarding.successDescription);
+    },
+  });
+
+  const formik = useFormik<OnboardingData>({
+    initialValues: INITIAL_DATA,
+    validationSchema: onboardingSchema,
+    onSubmit: async (values) => {
+      setSubmitError(null);
+      await mutation.mutateAsync(sanitizePayload(values));
+    },
+  });
+
+  const data = formik.values;
+  const isSubmitting = formik.isSubmitting || mutation.isPending;
 
   const update = useCallback(
     <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
-      setData((prev) => ({ ...prev, [key]: value }));
+      void formik.setFieldValue(key, value);
     },
-    [],
+    [formik],
   );
 
   const canNext = () => {
@@ -494,32 +574,6 @@ const OnboardingWizard = ({ onFinish }: { onFinish: (slug: string) => void }) =>
     return true;
   };
 
-  const submitProfile = async () => {
-    setIsSubmitting(true);
-    setSubmitError(null);
-
-    try {
-      const response = await fetch("/api/profiles", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to save profile");
-      }
-
-      const result = await response.json();
-      onFinish(result.slug);
-      router.push(`/${result.slug}`);
-    } catch (error) {
-      console.error(error);
-      setSubmitError(t.onboarding.successDescription);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
   const goNext = () => {
     if (step < 6) {
       setDirection(1);
@@ -527,7 +581,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: (slug: string) => void }) =>
       return;
     }
 
-    void submitProfile();
+    void formik.submitForm();
   };
 
   const goPrev = () => {
