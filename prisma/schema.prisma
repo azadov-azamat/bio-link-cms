@@ -1,0 +1,28 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model BioProfile {
+  id          String   @id @default(cuid())
+  slug        String   @unique
+  source      String
+  platforms   Json
+  template    String
+  logoUrl     String?
+  title       String
+  description String?
+  socials     Json
+  websites    Json
+  workHours   String?
+  phones      Json
+  googleMaps  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("bio_profiles")
+}
