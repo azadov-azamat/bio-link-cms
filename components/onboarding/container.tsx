@@ -18,9 +18,11 @@ import { PlusIcon, Trash2Icon } from "lucide-react";
 const Step3 = ({
   data,
   onChange,
+  onSelect,
 }: {
   data: OnboardingData;
   onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
+  onSelect?: () => void;
 }) => {
   const templates = Object.keys(THEME_TEMPLATES);
 
@@ -32,7 +34,10 @@ const Step3 = ({
         return (
           <button
             key={name}
-            onClick={() => onChange("template", name)}
+            onClick={() => {
+              onChange("template", name);
+              onSelect?.();
+            }}
             className={`relative rounded-2xl overflow-hidden border-2 transition-all hover:-translate-y-1 h-32 ${
               selected
                 ? "border-zinc-900 shadow-xl scale-[1.02]"
@@ -504,6 +509,12 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
     }
   };
 
+  const handleSingleSelectStep = (targetStep: number) => {
+    if (step !== targetStep) return;
+    setDirection(1);
+    setStep((current) => (current < 6 ? current + 1 : current));
+  };
+
   const STEPS = t.onboarding.steps;
   const progress = (step / 6) * 100;
   const currentStep = STEPS[step - 1];
@@ -576,8 +587,18 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
             className="mb-8"
           >
-            <div className="inline-flex items-center gap-2 bg-zinc-100 rounded-full px-3 py-1 text-[11px] font-bold text-zinc-500 uppercase tracking-wider mb-4">
-              {t.onboarding.stepBadge.replace("{step}", String(step))}
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="inline-flex items-center gap-2 bg-zinc-100 rounded-full px-3 py-1 text-[11px] font-bold text-zinc-500 uppercase tracking-wider">
+                {t.onboarding.stepBadge.replace("{step}", String(step))}
+              </div>
+              {step < 6 && (
+                <button
+                  onClick={goNext}
+                  className="px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-zinc-600 transition-colors"
+                >
+                  {t.onboarding.skip}
+                </button>
+              )}
             </div>
             <h2
               className="text-[28px] sm:text-[34px] font-black text-zinc-900 tracking-tight leading-tight"
@@ -603,7 +624,10 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             {step === 1 && (
               <Step1
                 data={data}
-                onChange={(k, v) => update(k, v as string)}
+                onChange={(k, v) => {
+                  update(k, v as string);
+                  handleSingleSelectStep(1);
+                }}
                 options={t.onboarding.step1Options}
               />
             )}
@@ -615,7 +639,11 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
               />
             )}
             {step === 3 && (
-              <Step3 data={data} onChange={(k, v) => update(k, v)} />
+              <Step3
+                data={data}
+                onChange={(k, v) => update(k, v)}
+                onSelect={() => handleSingleSelectStep(3)}
+              />
             )}
             {step === 4 && (
               <Step4
@@ -635,29 +663,21 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
           </motion.div>
         </AnimatePresence>
 
-        <div className="flex items-center justify-between pt-8 mt-8 border-t border-zinc-100">
+        <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between pt-8 mt-8 border-t border-zinc-100">
           <button
             onClick={goPrev}
             disabled={step === 1}
-            className="flex items-center gap-2 px-5 py-3 rounded-2xl border border-zinc-200 text-[14px] font-semibold text-zinc-600 hover:bg-zinc-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-zinc-200 text-[14px] font-semibold text-zinc-600 hover:bg-zinc-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >
             <Icons.ArrowLeft />
             {t.onboarding.back}
           </button>
 
-          <div className="flex items-center gap-2">
-            {step < 6 && (
-              <button
-                onClick={goNext}
-                className="px-3 py-3 rounded-2xl text-[13px] font-medium text-zinc-400 hover:text-zinc-600 transition-colors"
-              >
-                {t.onboarding.skip}
-              </button>
-            )}
+          <div className="w-full sm:w-auto flex items-center gap-2">
             <button
               onClick={goNext}
               disabled={!canNext()}
-              className="px-6 py-3 bg-zinc-900 text-white text-[14px] font-bold rounded-2xl shadow-lg shadow-zinc-900/15 hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5 disabled:hover:translate-y-0"
+              className="w-full sm:w-auto px-6 py-3 bg-zinc-900 text-white text-[14px] font-bold rounded-2xl shadow-lg shadow-zinc-900/15 hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5 disabled:hover:translate-y-0"
             >
               {step === 6 ? t.onboarding.finish : t.onboarding.continue}
             </button>
