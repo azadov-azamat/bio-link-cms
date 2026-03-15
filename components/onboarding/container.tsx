@@ -49,14 +49,16 @@ const Step3 = ({
               onChange("template", name);
               onSelect?.();
             }}
-            className={`relative rounded-3xl overflow-hidden border transition-all hover:-translate-y-1 p-0 ${
+            className={`h-90 relative rounded-3xl border overflow-hidden transition-all hover:-translate-y-1 p-0 ${
               selected
                 ? "border-zinc-900 shadow-xl scale-[1.02]"
                 : "border-zinc-200 hover:border-zinc-300"
             }`}
           >
-            <div className={`h-52 ${preset.bg} ${preset.border} flex flex-col text-left`}>
-              <div className={`${preset.headerBg} h-14 flex items-end pb-2 px-2.5 relative`}>
+            <div className={`h-full ${preset.bg}  flex flex-col text-left`}>
+              <div
+                className={`${preset.headerBg} h-24 flex items-end pb-2 px-2.5 relative`}
+              >
                 <div className="absolute top-2 left-0 right-0 flex justify-center">
                   <div className="w-6 h-1 rounded-full bg-white/30" />
                 </div>
@@ -68,11 +70,17 @@ const Step3 = ({
               </div>
 
               <div className="flex-1 p-2.5 flex flex-col">
-                <div className={`text-[10px] font-bold leading-tight mb-0.5 ${preset.textColor} truncate`}>
+                <div
+                  className={`text-[10px] font-bold leading-tight mb-0.5 ${preset.textColor} truncate`}
+                >
                   {templateItem.user}
                 </div>
-                <div className={`text-[8px] mb-0.5 ${preset.subText}`}>@{templateItem.handle}</div>
-                <div className={`text-[8px] mb-2 ${preset.subText} line-clamp-1`}>
+                <div className={`text-[8px] mb-0.5 ${preset.subText}`}>
+                  @{templateItem.handle}
+                </div>
+                <div
+                  className={`text-[8px] mb-2 ${preset.subText} line-clamp-1`}
+                >
                   {templateItem.bio}
                 </div>
 
@@ -90,15 +98,27 @@ const Step3 = ({
                 </div>
 
                 <div className="flex gap-1 justify-center mt-auto">
-                  {[<Icons.Instagram key="i" />, <Icons.Telegram key="t" />, <Icons.Facebook key="f" />].map((icon, iconIndex) => (
+                  {[
+                    <Icons.Instagram key="i" />,
+                    <Icons.Telegram key="t" />,
+                    <Icons.Facebook key="f" />,
+                  ].map((icon, iconIndex) => (
                     <div
                       key={iconIndex}
-                      className={`w-5 h-5 rounded-md flex items-center justify-center ${preset.secondBtn}`}
+                      className={`w-8 h-8 text-[10px] rounded-md flex items-center justify-center ${preset.secondBtn}`}
                     >
                       <span className="scale-[0.55]">{icon}</span>
                     </div>
                   ))}
                 </div>
+
+                {/* <div className="text-center mt-auto">
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-widest ${preset.subText}`}
+                  >
+                    preset
+                  </span>
+                </div> */}
               </div>
             </div>
           </button>
@@ -629,7 +649,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full px-5 py-10">
+      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full py-4">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={`header-${step}`}
