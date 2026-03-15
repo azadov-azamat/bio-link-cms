@@ -13,7 +13,15 @@ import { PreviewCard } from "@/components/onboarding/preview-card";
 import { Step1 } from "@/components/onboarding/steps/one";
 import { Step2 } from "@/components/onboarding/steps/two";
 import { useI18n } from "@/components/i18n-provider";
-import { PlusIcon, Trash2Icon } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { LogOut, PlusIcon, Trash2Icon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const Step3 = ({
   data,
@@ -475,6 +483,7 @@ const Step6 = ({
 };
 
 const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
+  const router = useRouter();
   const { t } = useI18n();
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
@@ -555,21 +564,28 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             </div>
           </div>
 
-          <div className="hidden sm:flex items-center gap-1.5 shrink-0">
-            {STEPS.map((s) => (
-              <div
-                key={s.id}
-                className={`rounded-full transition-all duration-300 ${
-                  s.id < step
-                    ? "w-4 h-4 bg-emerald-400 flex items-center justify-center"
-                    : s.id === step
-                      ? "w-4 h-4 bg-zinc-900"
-                      : "w-2 h-2 bg-zinc-200"
-                }`}
-              >
-                {s.id < step && <Icons.CheckIconAuth />}
-              </div>
-            ))}
+          <div className="shrink-0">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300">
+                  <Avatar className="size-9 border border-zinc-200">
+                    <AvatarImage src="/placeholder-user.jpg" alt="User profile" />
+                    <AvatarFallback className="bg-zinc-100 text-zinc-700 text-xs font-semibold">
+                      U
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-40">
+                <DropdownMenuItem
+                  onClick={() => router.push("/auth")}
+                  className="cursor-pointer text-red-600 focus:text-red-700"
+                >
+                  <LogOut className="size-4" />
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </div>
