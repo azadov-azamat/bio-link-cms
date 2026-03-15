@@ -22,18 +22,61 @@ const Step3 = ({
   data: OnboardingData;
   onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
 }) => {
-  const templates = Object.keys(THEME_TEMPLATES);
+  const templates = Object.entries(THEME_TEMPLATES).map(([name, theme], index) => {
+    const svg = encodeURIComponent(`
+      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 120'>
+        <defs>
+          <linearGradient id='g${index}' x1='0%' y1='0%' x2='100%' y2='100%'>
+            <stop offset='0%' stop-color='${[
+              "#6366f1",
+              "#22c55e",
+              "#f97316",
+              "#0ea5e9",
+              "#eab308",
+              "#f43f5e",
+              "#a855f7",
+              "#fb7185",
+            ][index % 8]}'/>
+            <stop offset='100%' stop-color='${[
+              "#ec4899",
+              "#14b8a6",
+              "#ef4444",
+              "#8b5cf6",
+              "#f59e0b",
+              "#8b5cf6",
+              "#06b6d4",
+              "#f97316",
+            ][index % 8]}'/>
+          </linearGradient>
+        </defs>
+        <rect width='240' height='120' fill='#0f172a' opacity='0.06' rx='16'/>
+        <rect x='14' y='14' width='212' height='92' rx='14' fill='url(#g${index})' opacity='0.9'/>
+        <circle cx='44' cy='46' r='16' fill='white' fill-opacity='0.9'/>
+        <rect x='68' y='34' width='92' height='10' rx='5' fill='white' fill-opacity='0.85'/>
+        <rect x='68' y='52' width='64' height='8' rx='4' fill='white' fill-opacity='0.6'/>
+        <rect x='28' y='74' width='82' height='20' rx='10' fill='white' fill-opacity='0.9'/>
+        <rect x='118' y='74' width='94' height='20' rx='10' fill='white' fill-opacity='0.35'/>
+      </svg>
+    `);
+
+    return {
+      name,
+      theme,
+      category: index % 2 === 0 ? "Minimal" : "Interactive",
+      image: `data:image/svg+xml,${svg}`,
+      badge: index % 3 === 0 ? "Yangi" : "Trend",
+    };
+  });
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      {templates.map((name) => {
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      {templates.map(({ name, theme, category, image, badge }) => {
         const selected = data.template === name;
-        const t = THEME_TEMPLATES[name as keyof typeof THEME_TEMPLATES];
         return (
           <button
             key={name}
             onClick={() => onChange("template", name)}
-            className={`relative rounded-2xl overflow-hidden border-2 transition-all hover:-translate-y-1 h-32 ${
+            className={`relative rounded-2xl overflow-hidden border-2 text-left transition-all hover:-translate-y-1 ${
               selected
                 ? "border-zinc-900 shadow-xl scale-[1.02]"
                 : "border-transparent hover:border-zinc-200"
@@ -42,12 +85,23 @@ const Step3 = ({
             {selected && (
               <div className="absolute inset-0 border-2 border-zinc-900 rounded-2xl" />
             )}
-            <div className={`h-1/2 ${t.header}`} />
-            <div className={`h-1/2 ${t.bg} flex items-center justify-center`}>
-              <div
-                className={`text-[10px] font-bold text-center px-2 ${t.text}`}
-              >
-                {name}
+            <div className={`h-24 ${theme.header} relative`}>
+              <img
+                src={image}
+                alt={`${name} template preview`}
+                className="w-full h-full object-cover opacity-95"
+              />
+              <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/90 text-[10px] font-semibold text-zinc-700">
+                {badge}
+              </div>
+            </div>
+            <div className={`p-3 ${theme.bg}`}>
+              <p className={`text-[12px] font-bold leading-tight ${theme.text}`}>{name}</p>
+              <p className={`text-[10px] mt-1 ${theme.sub}`}>{category} · Mock template</p>
+              <div className="mt-2 flex gap-1.5">
+                <span className={`h-2.5 w-2.5 rounded-full ${theme.btn}`} />
+                <span className="h-2.5 w-2.5 rounded-full bg-white/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-black/10" />
               </div>
             </div>
           </button>
