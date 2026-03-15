@@ -23,6 +23,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, PlusIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { LayoutContainer } from "@/components/layout-container";
 
 const Step3 = ({
   data,
@@ -592,17 +593,47 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
     exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -40 : 40 }),
   };
 
+  const renderProgressHeader = () => (
+    <div className="flex items-center gap-2 shrink-0">
+      <Icons.BrandIcon />
+      <span className="text-[15px] font-bold text-zinc-900 hidden sm:block">
+        BioSahifa
+      </span>
+    </div>
+  );
+
+  const renderUserMenu = () => (
+    <div className="shrink-0">
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300">
+            <Avatar className="size-9 border border-zinc-200">
+              <AvatarImage src="/placeholder-user.jpg" alt="User profile" />
+              <AvatarFallback className="bg-zinc-100 text-zinc-700 text-xs font-semibold">
+                U
+              </AvatarFallback>
+            </Avatar>
+          </button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuItem
+            onClick={() => router.push("/auth")}
+            className="cursor-pointer text-red-600 focus:text-red-700"
+          >
+            <LogOut className="size-4" />
+            Logout
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+
   return (
     <div className="min-h-screen bg-[#FAFAF9] flex flex-col">
       {/* Top bar */}
       <div className="sticky top-0 z-20 bg-white/90 backdrop-blur-sm border-b border-zinc-100">
-        <div className="max-w-4xl mx-auto px-5 h-14 flex items-center gap-5">
-          <div className="flex items-center gap-2 shrink-0">
-            <Icons.BrandIcon />
-            <span className="text-[15px] font-bold text-zinc-900 hidden sm:block">
-              BioSahifa
-            </span>
-          </div>
+        <LayoutContainer className="h-14 flex items-center gap-5">
+          {renderProgressHeader()}
 
           <div className="flex-1 mx-2">
             <div className="flex items-center justify-between mb-1">
@@ -622,34 +653,12 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             </div>
           </div>
 
-          <div className="shrink-0">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-300">
-                  <Avatar className="size-9 border border-zinc-200">
-                    <AvatarImage src="/placeholder-user.jpg" alt="User profile" />
-                    <AvatarFallback className="bg-zinc-100 text-zinc-700 text-xs font-semibold">
-                      U
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40">
-                <DropdownMenuItem
-                  onClick={() => router.push("/auth")}
-                  className="cursor-pointer text-red-600 focus:text-red-700"
-                >
-                  <LogOut className="size-4" />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
+          {renderUserMenu()}
+        </LayoutContainer>
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col max-w-4xl mx-auto w-full py-4">
+      <LayoutContainer className="flex-1 flex flex-col py-4">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={`header-${step}`}
@@ -757,7 +766,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             </button>
           </div>
         </div>
-      </div>
+      </LayoutContainer>
     </div>
   );
 };
