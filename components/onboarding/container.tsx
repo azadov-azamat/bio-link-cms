@@ -6,6 +6,7 @@ import { Icons } from "@/components/icons";
 import {
   INITIAL_DATA,
   OnboardingData,
+  TEMPLATE_NAMES,
   THEME_TEMPLATES,
   toSlug,
 } from "@/components/onboarding/utils";
@@ -32,13 +33,13 @@ const Step3 = ({
   onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
   onSelect?: () => void;
 }) => {
-  const templates = Object.keys(THEME_TEMPLATES);
+  const templates = TEMPLATE_NAMES;
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {templates.map((name) => {
         const selected = data.template === name;
-        const t = THEME_TEMPLATES[name as keyof typeof THEME_TEMPLATES];
+        const t = THEME_TEMPLATES[name];
         return (
           <button
             key={name}
