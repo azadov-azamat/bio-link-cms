@@ -150,13 +150,13 @@ export function HeroSection() {
             }}
             className="flex flex-wrap gap-3"
           >
-            <button className="group px-7 py-3.5 bg-zinc-900 text-white text-[15px] font-semibold rounded-2xl shadow-lg shadow-zinc-900/20 hover:bg-zinc-700 hover:-translate-y-0.5 transition-all flex items-center gap-2">
+            <button className="w-full sm:w-auto justify-center group px-7 py-3.5 bg-zinc-900 text-white text-[15px] font-semibold rounded-2xl shadow-lg shadow-zinc-900/20 hover:bg-zinc-700 hover:-translate-y-0.5 transition-all flex items-center gap-2">
               {t.hero.primaryCta}
               <span className="group-hover:translate-x-1 transition-transform">
                 <Icons.ArrowRight />
               </span>
             </button>
-            <button className="px-7 py-3.5 bg-white text-zinc-800 text-[15px] font-semibold rounded-2xl border border-zinc-200 shadow-sm hover:border-zinc-300 hover:-translate-y-0.5 transition-all">
+            <button className="w-full sm:w-auto px-7 py-3.5 bg-white text-zinc-800 text-[15px] font-semibold rounded-2xl border border-zinc-200 shadow-sm hover:border-zinc-300 hover:-translate-y-0.5 transition-all">
               {t.hero.secondaryCta}
             </button>
           </motion.div>
@@ -257,8 +257,12 @@ export function HeroSection() {
               <Icons.Globe />
             </div>
             <div>
-              <div className="text-[12px] font-bold text-zinc-900">{t.hero.floatingOnline}</div>
-              <div className="text-[11px] text-zinc-400">{t.hero.floatingUptime}</div>
+              <div className="text-[12px] font-bold text-zinc-900">
+                {t.hero.floatingOnline}
+              </div>
+              <div className="text-[11px] text-zinc-400">
+                {t.hero.floatingUptime}
+              </div>
             </div>
           </motion.div>
         </div>
