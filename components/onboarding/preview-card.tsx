@@ -1,7 +1,7 @@
 "use client";
 
 import { Icons } from "../icons";
-import { OnboardingData, THEME_TEMPLATES } from "./utils";
+import { OnboardingData, THEME_TEMPLATES, TEMPLATE_NAMES } from "./utils";
 import { useI18n } from "../i18n-provider";
 
 interface PreviewCardProps {
@@ -32,9 +32,10 @@ export function PreviewCard({ data, compact = false }: PreviewCardProps) {
   const formattedWorkHours = data.workHours.replace(" - ", " — ");
   const activeWebsites = data.websites.filter((website) => website.url.trim());
   const template = data.template;
-  const theme =
-    THEME_TEMPLATES[template as keyof typeof THEME_TEMPLATES] ||
-    THEME_TEMPLATES["Minimal oq"];
+  const safeTemplate = TEMPLATE_NAMES.includes(template as (typeof TEMPLATE_NAMES)[number])
+    ? (template as (typeof TEMPLATE_NAMES)[number])
+    : "Minimal oq";
+  const theme = THEME_TEMPLATES[safeTemplate];
 
   return (
     <div
