@@ -6,7 +6,6 @@ import { Icons } from "@/components/icons";
 import {
   INITIAL_DATA,
   OnboardingData,
-  THEME_TEMPLATES,
   toSlug,
 } from "@/components/onboarding/utils";
 import { PreviewCard } from "@/components/onboarding/preview-card";
@@ -22,86 +21,137 @@ const Step3 = ({
   data: OnboardingData;
   onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
 }) => {
-  const templates = Object.entries(THEME_TEMPLATES).map(([name, theme], index) => {
-    const svg = encodeURIComponent(`
-      <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 120'>
-        <defs>
-          <linearGradient id='g${index}' x1='0%' y1='0%' x2='100%' y2='100%'>
-            <stop offset='0%' stop-color='${[
-              "#6366f1",
-              "#22c55e",
-              "#f97316",
-              "#0ea5e9",
-              "#eab308",
-              "#f43f5e",
-              "#a855f7",
-              "#fb7185",
-            ][index % 8]}'/>
-            <stop offset='100%' stop-color='${[
-              "#ec4899",
-              "#14b8a6",
-              "#ef4444",
-              "#8b5cf6",
-              "#f59e0b",
-              "#8b5cf6",
-              "#06b6d4",
-              "#f97316",
-            ][index % 8]}'/>
-          </linearGradient>
-        </defs>
-        <rect width='240' height='120' fill='#0f172a' opacity='0.06' rx='16'/>
-        <rect x='14' y='14' width='212' height='92' rx='14' fill='url(#g${index})' opacity='0.9'/>
-        <circle cx='44' cy='46' r='16' fill='white' fill-opacity='0.9'/>
-        <rect x='68' y='34' width='92' height='10' rx='5' fill='white' fill-opacity='0.85'/>
-        <rect x='68' y='52' width='64' height='8' rx='4' fill='white' fill-opacity='0.6'/>
-        <rect x='28' y='74' width='82' height='20' rx='10' fill='white' fill-opacity='0.9'/>
-        <rect x='118' y='74' width='94' height='20' rx='10' fill='white' fill-opacity='0.35'/>
-      </svg>
-    `);
-
-    return {
-      name,
-      theme,
-      category: index % 2 === 0 ? "Minimal" : "Interactive",
-      image: `data:image/svg+xml,${svg}`,
-      badge: index % 3 === 0 ? "Yangi" : "Trend",
-    };
-  });
+  const templateCards = [
+    {
+      name: "Minimal oq",
+      tag: "Yangi",
+      type: "Minimal",
+      cardBg: "bg-white",
+      cardBorder: "border border-zinc-200",
+      titleColor: "text-zinc-900",
+      subtitleColor: "text-zinc-400",
+      topPreview: "bg-gradient-to-r from-indigo-500 via-violet-500 to-pink-500",
+      previewShape: "bg-white/30",
+      dots: ["bg-zinc-900", "bg-zinc-200", "bg-zinc-200"],
+    },
+    {
+      name: "Qora premium",
+      tag: "Trend",
+      type: "Interactive",
+      cardBg: "bg-zinc-950",
+      cardBorder: "border border-zinc-800",
+      titleColor: "text-white",
+      subtitleColor: "text-zinc-400",
+      topPreview: "bg-gradient-to-r from-emerald-500 to-teal-500",
+      previewShape: "bg-white/70",
+      dots: ["bg-white", "bg-zinc-300", "bg-zinc-700"],
+    },
+    {
+      name: "Gradient",
+      tag: "Trend",
+      type: "Minimal",
+      cardBg: "bg-violet-50",
+      cardBorder: "border border-violet-100",
+      titleColor: "text-violet-800",
+      subtitleColor: "text-violet-400",
+      topPreview: "bg-gradient-to-r from-violet-500 via-rose-500 to-pink-600",
+      previewShape: "bg-white/55",
+      dots: ["bg-violet-500", "bg-zinc-100", "bg-zinc-300"],
+    },
+    {
+      name: "Biznes",
+      tag: "Yangi",
+      type: "Interactive",
+      cardBg: "bg-slate-50",
+      cardBorder: "border border-slate-200",
+      titleColor: "text-slate-900",
+      subtitleColor: "text-slate-400",
+      topPreview: "bg-gradient-to-r from-sky-500 to-indigo-500",
+      previewShape: "bg-slate-200/90",
+      dots: ["bg-slate-800", "bg-zinc-100", "bg-zinc-300"],
+    },
+    {
+      name: "Kreativ",
+      tag: "Trend",
+      type: "Minimal",
+      cardBg: "bg-amber-50",
+      cardBorder: "border border-amber-200",
+      titleColor: "text-amber-900",
+      subtitleColor: "text-amber-500",
+      topPreview: "bg-gradient-to-r from-yellow-400 to-orange-500",
+      previewShape: "bg-white/70",
+      dots: ["bg-amber-500", "bg-zinc-100", "bg-zinc-300"],
+    },
+    {
+      name: "Soft pastel",
+      tag: "Trend",
+      type: "Interactive",
+      cardBg: "bg-rose-50",
+      cardBorder: "border border-rose-200",
+      titleColor: "text-rose-800",
+      subtitleColor: "text-rose-400",
+      topPreview: "bg-gradient-to-r from-rose-400 to-fuchsia-500",
+      previewShape: "bg-white/60",
+      dots: ["bg-rose-500", "bg-zinc-100", "bg-zinc-300"],
+    },
+    {
+      name: "Dark glass",
+      tag: "Yangi",
+      type: "Minimal",
+      cardBg: "bg-gradient-to-br from-purple-950 via-violet-900 to-slate-900",
+      cardBorder: "border border-violet-900/40",
+      titleColor: "text-white",
+      subtitleColor: "text-violet-200/80",
+      topPreview: "bg-gradient-to-r from-violet-500 to-sky-500",
+      previewShape: "bg-white/65",
+      dots: ["bg-violet-500/70", "bg-violet-200", "bg-violet-950"],
+    },
+    {
+      name: "Bold social",
+      tag: "Trend",
+      type: "Interactive",
+      cardBg: "bg-orange-500",
+      cardBorder: "border border-orange-400",
+      titleColor: "text-white",
+      subtitleColor: "text-orange-100",
+      topPreview: "bg-gradient-to-r from-rose-400 to-orange-400",
+      previewShape: "bg-white/65",
+      dots: ["bg-black", "bg-zinc-100", "bg-amber-700"],
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {templates.map(({ name, theme, category, image, badge }) => {
-        const selected = data.template === name;
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-5">
+      {templateCards.map((card) => {
+        const selected = data.template === card.name;
         return (
           <button
-            key={name}
-            onClick={() => onChange("template", name)}
-            className={`relative rounded-2xl overflow-hidden border-2 text-left transition-all hover:-translate-y-1 ${
-              selected
-                ? "border-zinc-900 shadow-xl scale-[1.02]"
-                : "border-transparent hover:border-zinc-200"
+            key={card.name}
+            onClick={() => onChange("template", card.name)}
+            className={`relative rounded-3xl overflow-hidden text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md ${card.cardBg} ${card.cardBorder} ${
+              selected ? "ring-2 ring-zinc-900" : "ring-1 ring-transparent"
             }`}
           >
-            {selected && (
-              <div className="absolute inset-0 border-2 border-zinc-900 rounded-2xl" />
-            )}
-            <div className={`h-24 ${theme.header} relative`}>
-              <img
-                src={image}
-                alt={`${name} template preview`}
-                className="w-full h-full object-cover opacity-95"
-              />
-              <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-white/90 text-[10px] font-semibold text-zinc-700">
-                {badge}
+            <div className={`h-30 ${card.topPreview} p-3 relative`}>
+              <div className="absolute right-3 top-3 bg-white/85 text-zinc-700 text-[10px] px-2.5 py-1 rounded-full font-semibold">
+                {card.tag}
+              </div>
+              <div className={`h-10 w-10 rounded-full ${card.previewShape}`} />
+              <div className={`h-3 w-32 rounded-full mt-2 ${card.previewShape}`} />
+              <div className={`h-2.5 w-22 rounded-full mt-2 ${card.previewShape}`} />
+              <div className="flex gap-2 mt-3">
+                <div className={`h-8 w-24 rounded-full ${card.previewShape}`} />
+                <div className={`h-8 w-24 rounded-full ${card.previewShape} opacity-70`} />
               </div>
             </div>
-            <div className={`p-3 ${theme.bg}`}>
-              <p className={`text-[12px] font-bold leading-tight ${theme.text}`}>{name}</p>
-              <p className={`text-[10px] mt-1 ${theme.sub}`}>{category} · Mock template</p>
-              <div className="mt-2 flex gap-1.5">
-                <span className={`h-2.5 w-2.5 rounded-full ${theme.btn}`} />
-                <span className="h-2.5 w-2.5 rounded-full bg-white/70" />
-                <span className="h-2.5 w-2.5 rounded-full bg-black/10" />
+
+            <div className="px-4 py-3.5">
+              <p className={`text-[18px] font-semibold leading-tight ${card.titleColor}`}>{card.name}</p>
+              <p className={`text-[12px] mt-1 ${card.subtitleColor}`}>{card.type} · Mock template</p>
+              <div className="mt-3 flex gap-2">
+                {card.dots.map((dotClass, index) => (
+                  <span key={`${card.name}-${index}`} className={`h-4 w-4 rounded-full ${dotClass}`} />
+                ))}
               </div>
             </div>
           </button>
