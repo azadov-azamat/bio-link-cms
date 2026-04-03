@@ -3,7 +3,6 @@
 import React, { useState, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "@/components/icons";
-import { TEMPLATE_STYLE_PRESETS } from "@/components/template-presets";
 import {
   INITIAL_DATA,
   OnboardingData,
@@ -11,6 +10,7 @@ import {
   toSlug,
 } from "@/components/onboarding/utils";
 import { PreviewCard } from "@/components/onboarding/preview-card";
+import { TemplateCard } from "@/components/onboarding/template-card";
 import { Step1 } from "@/components/onboarding/steps/one";
 import { Step2 } from "@/components/onboarding/steps/two";
 import { useI18n } from "@/components/i18n-provider";
@@ -34,95 +34,22 @@ const Step3 = ({
   onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
   onSelect?: () => void;
 }) => {
-  const { t } = useI18n();
-
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      {TEMPLATE_NAMES.map((name, index) => {
+      {TEMPLATE_NAMES.map((name) => {
         const selected = data.template === name;
-        const preset = TEMPLATE_STYLE_PRESETS[index];
-        const templateItem = t.templates.items[index] ?? t.templates.items[0];
 
         return (
-          <button
+          <TemplateCard
             key={name}
+            templateName={name}
+            data={data}
+            selected={selected}
             onClick={() => {
               onChange("template", name);
               onSelect?.();
             }}
-            className={`h-90 relative rounded-3xl border overflow-hidden transition-all hover:-translate-y-1 p-0 ${
-              selected
-                ? "border-zinc-900 shadow-xl scale-[1.02]"
-                : "border-zinc-200 hover:border-zinc-300"
-            }`}
-          >
-            <div className={`h-full ${preset.bg}  flex flex-col text-left`}>
-              <div
-                className={`${preset.headerBg} h-24 flex items-end pb-2 px-2.5 relative`}
-              >
-                <div className="absolute top-2 left-0 right-0 flex justify-center">
-                  <div className="w-6 h-1 rounded-full bg-white/30" />
-                </div>
-                <div
-                  className={`w-8 h-8 rounded-xl ${preset.avatarBg} flex items-center justify-center text-[12px] font-black ${preset.avatarText}`}
-                >
-                  {templateItem.user[0]}
-                </div>
-              </div>
-
-              <div className="flex-1 p-2.5 flex flex-col">
-                <div
-                  className={`text-[10px] font-bold leading-tight mb-0.5 ${preset.textColor} truncate`}
-                >
-                  {templateItem.user}
-                </div>
-                <div className={`text-[8px] mb-0.5 ${preset.subText}`}>
-                  @{templateItem.handle}
-                </div>
-                <div
-                  className={`text-[8px] mb-2 ${preset.subText} line-clamp-1`}
-                >
-                  {templateItem.bio}
-                </div>
-
-                <div className="space-y-1 mb-2">
-                  <div
-                    className={`w-full py-1.5 px-2 rounded-lg text-center text-[8px] font-semibold ${preset.btnBg} ${preset.btnText}`}
-                  >
-                    {t.templates.ctaPrimary}
-                  </div>
-                  <div
-                    className={`w-full py-1.5 px-2 rounded-lg text-center text-[8px] font-semibold ${preset.secondBtn}`}
-                  >
-                    {t.templates.ctaSecondary}
-                  </div>
-                </div>
-
-                <div className="flex gap-1 justify-center mt-auto">
-                  {[
-                    <Icons.Instagram key="i" />,
-                    <Icons.Telegram key="t" />,
-                    <Icons.Facebook key="f" />,
-                  ].map((icon, iconIndex) => (
-                    <div
-                      key={iconIndex}
-                      className={`w-8 h-8 text-[10px] rounded-md flex items-center justify-center ${preset.secondBtn}`}
-                    >
-                      <span className="scale-[0.55]">{icon}</span>
-                    </div>
-                  ))}
-                </div>
-
-                {/* <div className="text-center mt-auto">
-                  <span
-                    className={`text-[10px] font-bold uppercase tracking-widest ${preset.subText}`}
-                  >
-                    preset
-                  </span>
-                </div> */}
-              </div>
-            </div>
-          </button>
+          />
         );
       })}
     </div>

@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useSpring } from "framer-motion";
-import { Icons } from "./icons";
 import { useI18n } from "./i18n-provider";
-import { TEMPLATE_STYLE_PRESETS } from "./template-presets";
+import { TemplateCard } from "./onboarding/template-card";
+import { TEMPLATE_NAMES } from "./onboarding/utils";
 
 export function TemplatesSection() {
   const { t } = useI18n();
@@ -14,7 +14,7 @@ export function TemplatesSection() {
     offset: ["start start", "end end"],
   });
 
-  const templates = t.templates.items.map((item, i) => ({ ...item, ...TEMPLATE_STYLE_PRESETS[i] }));
+  const templates = t.templates.items;
 
   const CARD_WIDTH = 260;
   const GAP = 24;
@@ -23,12 +23,20 @@ export function TemplatesSection() {
   const activeIndexMotion = useTransform(scrollYProgress, [0, 1], [0, templates.length - 1]);
 
   const [viewportW, setViewportW] = useState(1280);
+  const [viewportH, setViewportH] = useState(900);
   useEffect(() => {
-    const update = () => setViewportW(window.innerWidth);
+    const update = () => {
+      setViewportW(window.innerWidth);
+      setViewportH(window.innerHeight);
+    };
     update();
     window.addEventListener("resize", update);
     return () => window.removeEventListener("resize", update);
   }, []);
+
+  const mobileCardWidth = Math.max(220, Math.min(320, viewportW - 56));
+  const mobileCardHeight = Math.max(360, Math.min(460, Math.round(viewportH * 0.52)));
+  const mobileStageHeight = mobileCardHeight + 40;
 
   const startX = viewportW / 2 - CARD_WIDTH / 2;
   const endX = startX - (templates.length - 1) * CARD_STEP;
@@ -39,13 +47,16 @@ export function TemplatesSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   useEffect(() => activeIndexMotion.on("change", (v) => setActiveIndex(Math.round(v))), [activeIndexMotion]);
 
-  const renderTemplateCard = (tItem: (typeof templates)[number], i: number, mobile = false) => {
+  const renderTemplateCard = (_tItem: (typeof templates)[number], i: number, mobile = false) => {
     const isActive = i === activeIndex;
     const relativeIndex = i - activeIndex;
+    const cardWidth = mobile ? mobileCardWidth : CARD_WIDTH;
+    const cardHeight = mobile ? mobileCardHeight : undefined;
+    const templateName = TEMPLATE_NAMES[i] ?? TEMPLATE_NAMES[0];
 
     return (
       <motion.div
-        key={`${tItem.handle}-${i}`}
+        key={`${templateName}-${i}`}
         animate={
           mobile
             ? {
@@ -56,47 +67,27 @@ export function TemplatesSection() {
             : { scale: isActive ? 1.12 : 0.88, opacity: isActive ? 1 : 0.55, y: isActive ? -8 : 0 }
         }
         transition={{ type: "spring", stiffness: 200, damping: 24 }}
-        style={{ width: CARD_WIDTH, flexShrink: 0, zIndex: templates.length - i }}
-        className={`h-115 rounded-4xl overflow-hidden shadow-2xl ${tItem.bg} ${tItem.border} flex flex-col absolute left-1/2 -translate-x-1/2`}
+        style={{ width: cardWidth, height: cardHeight, flexShrink: 0, zIndex: templates.length - i }}
+        className={`absolute left-1/2 -translate-x-1/2 ${mobile ? "" : "h-115"}`}
       >
-        <div className={`${tItem.headerBg} h-28 flex items-end pb-3 px-4 relative`}>
-          <div className="absolute top-3 left-0 right-0 flex justify-center"><div className="w-8 h-1 rounded-full bg-white/30" /></div>
-          <div className={`w-12 h-12 rounded-2xl ${tItem.avatarBg} flex items-center justify-center text-[18px] font-black ${tItem.avatarText} shadow-md`}>{tItem.user[0]}</div>
-        </div>
-
-        <div className="flex-1 p-4 flex flex-col">
-          <div className={`text-[14px] font-bold mb-0.5 ${tItem.textColor}`}>{tItem.user}</div>
-          <div className={`text-[11px] mb-0.5 ${tItem.subText}`}>@{tItem.handle}</div>
-          <div className={`text-[11px] mb-4 ${tItem.subText}`}>{tItem.bio}</div>
-
-          <div className="space-y-2 mb-4">
-            {[t.templates.ctaPrimary, t.templates.ctaSecondary].map((btn, bi) => (
-              <div key={bi} className={`w-full py-2.5 px-4 rounded-xl text-center text-[11px] font-semibold ${bi === 0 ? `${tItem.btnBg} ${tItem.btnText}` : tItem.secondBtn}`}>
-                {btn}
-              </div>
-            ))}
-          </div>
-
-          <div className="flex gap-2 justify-center mb-3">
-            {[<Icons.Instagram key="i" />, <Icons.Telegram key="t" />, <Icons.Facebook key="f" />].map((s, ind) => (
-              <div key={ind} className={`w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold ${tItem.secondBtn}`}>{s}</div>
-            ))}
-          </div>
-
-          <div className="text-center mt-auto"><span className={`text-[10px] font-bold uppercase tracking-widest ${tItem.subText}`}>{tItem.name}</span></div>
-        </div>
+        <TemplateCard
+          templateName={templateName}
+          variant="showcase"
+          className="w-full h-full shadow-2xl"
+          showTemplateName
+        />
       </motion.div>
     );
   };
 
   return (
-    <section id="shablonlar" ref={sectionRef} style={{ height: `${templates.length * 100}vh` }} className="relative">
-      <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden bg-[#FAFAF9]">
-        <div className="text-center mb-12 px-5">
+    <section id="shablonlar" ref={sectionRef} style={{ height: `${templates.length * 100}svh` }} className="relative">
+      <div className="sticky top-0 flex h-[100svh] flex-col justify-between overflow-hidden bg-[#FAFAF9] py-5 md:h-screen md:justify-center md:py-0">
+        <div className="text-center mb-6 px-5 shrink-0 md:mb-12">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             <p className="text-[13px] font-semibold text-zinc-400 uppercase tracking-widest mb-3">{t.templates.eyebrow}</p>
-            <h2 className="text-[40px] lg:text-[52px] font-black tracking-tight text-zinc-900" style={{ fontFamily: "'Georgia', serif" }}>{t.templates.title}</h2>
-            <p className="mt-3 text-[16px] text-zinc-500">{t.templates.subtitle}</p>
+            <h2 className="text-[30px] leading-[0.95] sm:text-[34px] md:text-[40px] lg:text-[52px] font-black tracking-tight text-zinc-900" style={{ fontFamily: "'Georgia', serif" }}>{t.templates.title}</h2>
+            <p className="mt-3 max-w-[22rem] mx-auto text-[14px] sm:text-[15px] md:text-[16px] text-zinc-500">{t.templates.subtitle}</p>
           </motion.div>
         </div>
 
@@ -104,7 +95,7 @@ export function TemplatesSection() {
           <motion.div className="absolute top-0 flex items-center" style={{ x, gap: GAP }}>
             {templates.map((tItem, i) => {
               return (
-                <motion.div key={`${tItem.handle}-${i}`} style={{ width: CARD_WIDTH, flexShrink: 0 }} className="relative h-115">
+                <motion.div key={`${TEMPLATE_NAMES[i] ?? i}-${i}`} style={{ width: CARD_WIDTH, flexShrink: 0 }} className="relative h-115">
                   {renderTemplateCard(tItem, i)}
                 </motion.div>
               );
@@ -112,17 +103,19 @@ export function TemplatesSection() {
           </motion.div>
         </div>
 
-        <div className="relative h-125 overflow-hidden md:hidden px-2">
+        <div className="relative overflow-hidden px-4 shrink-0 md:hidden" style={{ height: mobileStageHeight }}>
           {templates.map((tItem, i) => renderTemplateCard(tItem, i, true))}
         </div>
 
-        <div className="flex justify-center gap-2 mt-8">
-          {templates.map((_, i) => (
-            <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === activeIndex ? 'w-6 bg-zinc-900' : 'w-1.5 bg-zinc-300'}`} />
-          ))}
-        </div>
+        <div className="shrink-0 mt-4 md:mt-8">
+          <div className="flex justify-center gap-2">
+            {templates.map((_, i) => (
+              <div key={i} className={`h-1.5 rounded-full transition-all duration-300 ${i === activeIndex ? 'w-6 bg-zinc-900' : 'w-1.5 bg-zinc-300'}`} />
+            ))}
+          </div>
 
-        <p className="text-center text-[12px] text-zinc-400 mt-4">{t.templates.scrollHint}</p>
+          <p className="text-center text-[11px] md:text-[12px] text-zinc-400 mt-3 md:mt-4">{t.templates.scrollHint}</p>
+        </div>
       </div>
     </section>
   );
