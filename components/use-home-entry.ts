@@ -3,34 +3,36 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { readAuthSession } from "@/lib/auth-session";
 import { ensureGuestSession } from "@/lib/api";
 import { persistGuestOnboardingSession, readGuestOnboardingSession } from "@/lib/guest-session";
+import { useAuthStatus } from "./use-auth-status";
 
 export function useHomeEntry() {
   const router = useRouter();
-  const [hasAuthSession, setHasAuthSession] = useState(false);
   const [hasGuestDraft, setHasGuestDraft] = useState(false);
   const [isBootstrappingGuest, setIsBootstrappingGuest] = useState(false);
+  const { hydrated, hasLocalToken, isAuthenticated, isChecking } = useAuthStatus();
 
   useEffect(() => {
-    setHasAuthSession(Boolean(readAuthSession()));
     setHasGuestDraft(Boolean(readGuestOnboardingSession()));
   }, []);
 
-  const hasStoredSession = hasAuthSession || hasGuestDraft;
-
   const enterRoute = useMemo(() => {
-    if (hasAuthSession) {
+    if (isAuthenticated) {
       return "/dashboard";
     }
 
     return "/onboarding";
-  }, [hasAuthSession]);
+  }, [isAuthenticated]);
 
   const openEntry = useCallback(async () => {
-    if (hasStoredSession) {
+    if (isAuthenticated) {
       router.push(enterRoute);
+      return;
+    }
+
+    if (hasGuestDraft) {
+      router.push("/onboarding");
       return;
     }
 
@@ -48,12 +50,14 @@ export function useHomeEntry() {
     } finally {
       setIsBootstrappingGuest(false);
     }
-  }, [enterRoute, hasStoredSession, isBootstrappingGuest, router]);
+  }, [enterRoute, hasGuestDraft, isAuthenticated, isBootstrappingGuest, router]);
 
   return {
-    hasStoredSession,
-    hasAuthSession,
+    hydrated,
+    hasLocalToken,
+    hasAuthSession: isAuthenticated,
     hasGuestDraft,
+    isCheckingAuth: isChecking,
     isBootstrappingGuest,
     openEntry,
   };

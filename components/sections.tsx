@@ -41,7 +41,7 @@ export function HowItWorksSection() {
 
 export function CTASection() {
   const { t } = useI18n();
-  const { hasStoredSession, isBootstrappingGuest, openEntry } = useHomeEntry();
+  const { hasLocalToken, isBootstrappingGuest, openEntry } = useHomeEntry();
 
   return (
     <section id="cta" className="py-24 bg-zinc-900 relative overflow-hidden">
@@ -63,7 +63,7 @@ export function CTASection() {
               disabled={isBootstrappingGuest}
               className="px-8 py-4 bg-white text-zinc-900 text-[15px] font-bold rounded-2xl hover:bg-zinc-100 transition-all shadow-xl hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
             >
-              {hasStoredSession
+              {hasLocalToken
                 ? t.navbar.login
                 : isBootstrappingGuest
                   ? `${t.cta.primary}...`

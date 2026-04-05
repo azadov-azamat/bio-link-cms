@@ -19,7 +19,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { locale, setLocale, t } = useI18n();
-  const { hasStoredSession, isBootstrappingGuest, openEntry } = useHomeEntry();
+  const { hydrated, hasLocalToken, isBootstrappingGuest, openEntry } = useHomeEntry();
 
   const tickingRef = useRef(false);
 
@@ -96,7 +96,9 @@ export function Navbar() {
                 </button>
               ))}
             </div>
-            {hasStoredSession ? (
+            {!hydrated ? (
+              <div className="h-10 w-28 rounded-xl bg-zinc-100" />
+            ) : hasLocalToken ? (
               <button
                 onClick={() => void openEntry()}
                 className="px-4 py-2 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all shadow-md shadow-zinc-900/15"
@@ -165,7 +167,9 @@ export function Navbar() {
                   ))}
                 </div>
                 <div className="flex gap-2 pt-3 border-t border-zinc-100 mt-1">
-                  {hasStoredSession ? (
+                  {!hydrated ? (
+                    <div className="h-11 flex-1 rounded-xl bg-zinc-100" />
+                  ) : hasLocalToken ? (
                     <button
                       onClick={() => {
                         void openEntry();

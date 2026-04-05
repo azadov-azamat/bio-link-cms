@@ -1,10 +1,12 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Icons } from "@/components/icons";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useI18n } from "@/components/i18n-provider";
+import { clearAuthSession } from "@/lib/auth-session";
+import { useAuthStatus } from "@/components/use-auth-status";
 
 const TELEGRAM_BOT_USERNAME =
   process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME?.replace(/^@/, "") || "";
@@ -15,6 +17,22 @@ function AuthPageContent() {
   const { t } = useI18n();
   const isClaimFlow = searchParams.get("screen") === "claim";
   const [isTelegramOpening, setIsTelegramOpening] = useState(false);
+  const { hydrated, hasLocalToken, isAuthenticated, isChecking } = useAuthStatus();
+
+  useEffect(() => {
+    if (!hydrated || isChecking) {
+      return;
+    }
+
+    if (hasLocalToken && isAuthenticated) {
+      router.replace("/dashboard");
+      return;
+    }
+
+    if (hasLocalToken && !isAuthenticated) {
+      clearAuthSession();
+    }
+  }, [hasLocalToken, hydrated, isAuthenticated, isChecking, router]);
 
   const handleAuthRedirect = () => {
     router.push(isClaimFlow ? "/dashboard" : "/onboarding");
@@ -44,6 +62,25 @@ function AuthPageContent() {
       setIsTelegramOpening(false);
     }, 2500);
   };
+
+  if (hasLocalToken && (isChecking || isAuthenticated)) {
+    return (
+      <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-5">
+        <div className="w-full max-w-md rounded-4xl border border-zinc-200 bg-white p-8 shadow-sm">
+          <h1
+            className="text-[28px] font-black tracking-tight text-zinc-900"
+            style={{ fontFamily: "'Georgia', serif" }}
+          >
+            Dashboard’ga yo‘naltirilmoqda
+          </h1>
+          <p className="mt-3 text-[15px] leading-relaxed text-zinc-500">
+            Sessiyangiz tekshirilyapti. Agar token yaroqli bo‘lsa, sizni
+            dashboard sahifasiga olib o‘tamiz.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#FAFAF9] flex">
