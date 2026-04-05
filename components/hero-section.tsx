@@ -5,11 +5,13 @@ import { motion } from "framer-motion";
 import { Icons } from "./icons";
 import { ProfileCard } from "./profile-card";
 import { useI18n } from "./i18n-provider";
+import { useHomeEntry } from "./use-home-entry";
 
 export function HeroSection() {
   const urlText = "biosahifa.uz";
   const [typed, setTyped] = useState("");
   const { t } = useI18n();
+  const { hasStoredSession, isBootstrappingGuest, openEntry } = useHomeEntry();
   const phrase = t.hero.typedPhrase;
 
   useEffect(() => {
@@ -150,8 +152,16 @@ export function HeroSection() {
             }}
             className="flex flex-wrap gap-3"
           >
-            <button className="w-full sm:w-auto justify-center group px-7 py-3.5 bg-zinc-900 text-white text-[15px] font-semibold rounded-2xl shadow-lg shadow-zinc-900/20 hover:bg-zinc-700 hover:-translate-y-0.5 transition-all flex items-center gap-2">
-              {t.hero.primaryCta}
+            <button
+              onClick={() => void openEntry()}
+              disabled={isBootstrappingGuest}
+              className="w-full sm:w-auto justify-center group px-7 py-3.5 bg-zinc-900 text-white text-[15px] font-semibold rounded-2xl shadow-lg shadow-zinc-900/20 hover:bg-zinc-700 hover:-translate-y-0.5 transition-all flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {hasStoredSession
+                ? t.navbar.login
+                : isBootstrappingGuest
+                  ? `${t.hero.primaryCta}...`
+                  : t.hero.primaryCta}
               <span className="group-hover:translate-x-1 transition-transform">
                 <Icons.ArrowRight />
               </span>

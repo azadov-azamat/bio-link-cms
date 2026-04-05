@@ -4,7 +4,9 @@ export interface OnboardingData {
   source: string;
   platforms: string[];
   template: string;
+  templateId: string;
   logo: string | null;
+  logoMediaId: string | null;
   title: string;
   description: string;
   socials: Record<string, string>;
@@ -26,7 +28,9 @@ export const INITIAL_DATA: OnboardingData = {
   source: "",
   platforms: [],
   template: "",
+  templateId: "",
   logo: null,
+  logoMediaId: null,
   title: "",
   description: "",
   socials: {},

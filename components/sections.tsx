@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Icons } from './icons';
 import { useI18n } from './i18n-provider';
+import { useHomeEntry } from './use-home-entry';
 
 export function HowItWorksSection() {
   const { t } = useI18n();
@@ -40,6 +41,7 @@ export function HowItWorksSection() {
 
 export function CTASection() {
   const { t } = useI18n();
+  const { hasStoredSession, isBootstrappingGuest, openEntry } = useHomeEntry();
 
   return (
     <section id="cta" className="py-24 bg-zinc-900 relative overflow-hidden">
@@ -56,7 +58,17 @@ export function CTASection() {
             {t.cta.descriptionLine2}
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <button className="px-8 py-4 bg-white text-zinc-900 text-[15px] font-bold rounded-2xl hover:bg-zinc-100 transition-all shadow-xl hover:-translate-y-0.5">{t.cta.primary}</button>
+            <button
+              onClick={() => void openEntry()}
+              disabled={isBootstrappingGuest}
+              className="px-8 py-4 bg-white text-zinc-900 text-[15px] font-bold rounded-2xl hover:bg-zinc-100 transition-all shadow-xl hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {hasStoredSession
+                ? t.navbar.login
+                : isBootstrappingGuest
+                  ? `${t.cta.primary}...`
+                  : t.cta.primary}
+            </button>
             <button className="px-8 py-4 bg-white/10 text-white text-[15px] font-bold rounded-2xl border border-white/20 hover:bg-white/20 transition-all hover:-translate-y-0.5">{t.cta.secondary}</button>
           </div>
         </motion.div>

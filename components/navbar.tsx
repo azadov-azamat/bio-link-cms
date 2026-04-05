@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Icons } from "./icons";
 import { Locale } from "@/lib/i18n";
 import { useI18n } from "./i18n-provider";
+import { useHomeEntry } from "./use-home-entry";
 
 const languages: { code: Locale; label: string }[] = [
   { code: "uz", label: "O‘zbekcha" },
@@ -18,6 +19,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { locale, setLocale, t } = useI18n();
+  const { hasStoredSession, isBootstrappingGuest, openEntry } = useHomeEntry();
 
   const tickingRef = useRef(false);
 
@@ -94,18 +96,30 @@ export function Navbar() {
                 </button>
               ))}
             </div>
-            <button
-              onClick={() => router.push("/auth")}
-              className="px-4 py-2 text-[13.5px] font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all"
-            >
-              {t.navbar.login}
-            </button>
-            <button
-              onClick={() => router.push("/auth?screen=onboarding")}
-              className="px-4 py-2 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all shadow-md shadow-zinc-900/15"
-            >
-              {t.navbar.start}
-            </button>
+            {hasStoredSession ? (
+              <button
+                onClick={() => void openEntry()}
+                className="px-4 py-2 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all shadow-md shadow-zinc-900/15"
+              >
+                {t.navbar.login}
+              </button>
+            ) : (
+              <>
+                <button
+                  onClick={() => router.push("/auth")}
+                  className="px-4 py-2 text-[13.5px] font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-xl transition-all"
+                >
+                  {t.navbar.login}
+                </button>
+                <button
+                  onClick={() => void openEntry()}
+                  disabled={isBootstrappingGuest}
+                  className="px-4 py-2 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all shadow-md shadow-zinc-900/15 disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {isBootstrappingGuest ? `${t.navbar.start}...` : t.navbar.start}
+                </button>
+              </>
+            )}
           </div>
 
           <button
@@ -151,24 +165,41 @@ export function Navbar() {
                   ))}
                 </div>
                 <div className="flex gap-2 pt-3 border-t border-zinc-100 mt-1">
-                  <button
-                    onClick={() => {
-                      router.push("/auth");
-                      setMobileOpen(false);
-                    }}
-                    className="flex-1 py-2.5 text-[13.5px] font-medium text-zinc-700 border border-zinc-200 rounded-xl hover:bg-zinc-50 transition-all"
-                  >
-                    {t.navbar.login}
-                  </button>
-                  <button
-                    onClick={() => {
-                      router.push("/auth?screen=onboarding");
-                      setMobileOpen(false);
-                    }}
-                    className="flex-1 py-2.5 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all"
-                  >
-                    {t.navbar.start}
-                  </button>
+                  {hasStoredSession ? (
+                    <button
+                      onClick={() => {
+                        void openEntry();
+                        setMobileOpen(false);
+                      }}
+                      className="flex-1 py-2.5 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all"
+                    >
+                      {t.navbar.login}
+                    </button>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => {
+                          router.push("/auth");
+                          setMobileOpen(false);
+                        }}
+                        className="flex-1 py-2.5 text-[13.5px] font-medium text-zinc-700 border border-zinc-200 rounded-xl hover:bg-zinc-50 transition-all"
+                      >
+                        {t.navbar.login}
+                      </button>
+                      <button
+                        onClick={() => {
+                          void openEntry();
+                          setMobileOpen(false);
+                        }}
+                        disabled={isBootstrappingGuest}
+                        className="flex-1 py-2.5 text-[13.5px] font-semibold bg-zinc-900 text-white rounded-xl hover:bg-zinc-700 transition-all disabled:cursor-not-allowed disabled:opacity-70"
+                      >
+                        {isBootstrappingGuest
+                          ? `${t.navbar.start}...`
+                          : t.navbar.start}
+                      </button>
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>

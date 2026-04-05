@@ -24,6 +24,77 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Backend Setup
+
+Frontend `Next.js`, backend esa alohida `Fastify + Sequelize + PostgreSQL` app sifatida [`backend`](/Users/azadov.za/repos/bio-link-cms/backend) ichida turadi.
+
+1. Postgres'ni ishga tushiring:
+
+```bash
+cd backend
+docker compose up -d
+```
+
+2. Env ni tayyorlang:
+
+```bash
+cp .env.example .env
+```
+
+Telegram auth ishlashi uchun `.env` ichida quyidagilar ham bo'lishi kerak:
+
+```bash
+FRONTEND_URL=http://localhost:3000
+TELEGRAM_BOT_TOKEN=...
+TELEGRAM_WEBHOOK_URL=https://your-public-backend-url
+BOT_TRANSPORT=webhook
+JWT_ACCESS_SECRET=replace-with-long-random-secret
+```
+
+`TELEGRAM_WEBHOOK_URL` backend'ning internetdan ko'rinadigan HTTPS manzili bo'lishi kerak. Lokal ishlatsangiz tunnel (`ngrok`, `cloudflared`) kerak bo'ladi.
+`BOT_TRANSPORT` default `webhook`; faqat development fallback kerak bo'lsa `polling` qilib yoqiladi.
+
+3. Migrationlarni yuring:
+
+```bash
+yarn migrate
+```
+
+4. Backendni ishga tushiring:
+
+```bash
+yarn dev
+# yoki
+yarn start
+```
+
+Default `DATABASE_URL`:
+
+```bash
+postgres://postgres:postgres@127.0.0.1:5432/biosahifa
+```
+
+Hosted Postgres ishlatsangiz ko'pincha SSL kerak bo'ladi. Bunday holatda `.env` ga quyidagini qo'shing:
+
+```bash
+DATABASE_SSL=true
+```
+
+Telegram bot env'lari hali berilmagan bo'lsa backend baribir ishga tushadi, lekin Telegram auth endpointlari `503` qaytaradi. Botni yoqish uchun quyidagilar to'liq bo'lishi kerak:
+
+```bash
+TELEGRAM_BOT_TOKEN=...
+TELEGRAM_WEBHOOK_URL=https://your-public-backend-url
+BOT_TRANSPORT=webhook
+JWT_ACCESS_SECRET=replace-with-long-random-secret
+```
+
+Frontend Telegram tugmasi uchun esa root `.env` ichida quyidagini yozing:
+
+```bash
+NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=your_bot_username
+```
+
 ## Learn More
 
 To learn more, take a look at the following resources:

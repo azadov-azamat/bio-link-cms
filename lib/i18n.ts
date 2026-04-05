@@ -87,6 +87,16 @@ type TranslationDictionary = {
     sampleRole: string;
     sampleButtons: string[];
     yourLink: string;
+    telegramOpening: string;
+    telegramError: string;
+    telegramCta: string;
+  };
+  authCallback: {
+    loadingTitle: string;
+    loadingDescription: string;
+    errorTitle: string;
+    genericError: string;
+    retry: string;
   };
   onboarding: {
     progressStep: string;
@@ -118,6 +128,38 @@ type TranslationDictionary = {
     successTitle: string;
     successDescription: string;
     dashboard: string;
+    loadingProfile: string;
+    saving: string;
+    saveError: string;
+  };
+  dashboardPage: {
+    title: string;
+    description: string;
+    loading: string;
+    loadError: string;
+    errorTitle: string;
+    retry: string;
+    emptyTitle: string;
+    emptyDescription: string;
+    startAction: string;
+    editAction: string;
+    claimAction: string;
+    summaryTitle: string;
+    profileTitle: string;
+    platforms: string;
+    phones: string;
+    socials: string;
+    websites: string;
+    name: string;
+    template: string;
+    workingHours: string;
+    mapLabel: string;
+    notProvided: string;
+    connected: string;
+    guestNotice: string;
+    claimTitle: string;
+    claimDescription: string;
+    claimBadge: string;
   };
 };
 
@@ -275,6 +317,17 @@ export const translations: Record<Locale, TranslationDictionary> = {
       sampleRole: "UX Dizayner · Toshkent",
       sampleButtons: ["Bog'lanish", "Portfolio", "Telegram"],
       yourLink: "Sizning havolangiz",
+      telegramOpening: "Telegram oynasi tayyorlanmoqda...",
+      telegramError: "Telegram auth oqimini ochib bo'lmadi. Qayta urinib ko'ring.",
+      telegramCta: "Telegram botni ochish",
+    },
+    authCallback: {
+      loadingTitle: "Telegram tasdiqlanmoqda",
+      loadingDescription:
+        "Autorizatsiya ma'lumotlari tekshirilmoqda. Bir necha soniya kuting.",
+      errorTitle: "Telegram auth tugamadi",
+      genericError: "Telegram orqali kirishda xatolik yuz berdi.",
+      retry: "Auth sahifasiga qaytish",
     },
     onboarding: {
       progressStep: "{step}/{total}-qadam",
@@ -321,6 +374,42 @@ export const translations: Record<Locale, TranslationDictionary> = {
       successTitle: "Tabriklayapman!",
       successDescription: "Sahifangiz tayyor. Endi dashboard'da tahrirlash va boshqarish mumkin.",
       dashboard: "Dashboard'ga o'tish",
+      loadingProfile: "Saqlangan profilingiz yuklanmoqda...",
+      saving: "Saqlanmoqda...",
+      saveError: "Profilni saqlashda xatolik yuz berdi. Qayta urinib ko'ring.",
+    },
+    dashboardPage: {
+      title: "Dashboard",
+      description:
+        "Bu yerda sahifangizning holatini ko'rasiz, ma'lumotlarni tahrirlaysiz va profilingizni akkauntga bog'lashga tayyor bo'lasiz.",
+      loading: "Dashboard yuklanmoqda...",
+      loadError: "Dashboard ma'lumotlarini yuklab bo'lmadi.",
+      errorTitle: "Dashboard ochilmadi",
+      retry: "Qayta urinish",
+      emptyTitle: "Hozircha profil topilmadi",
+      emptyDescription:
+        "Avval onboarding bosqichlarini yakunlang, keyin bu yerda tayyor profilingiz ko'rinadi.",
+      startAction: "Onboarding'ni boshlash",
+      editAction: "Onboarding'ni tahrirlash",
+      claimAction: "Template ni claim qilish",
+      summaryTitle: "Qisqacha holat",
+      profileTitle: "Profil ma'lumotlari",
+      platforms: "Platformalar",
+      phones: "Telefonlar",
+      socials: "Ijtimoiy tarmoqlar",
+      websites: "Websaytlar",
+      name: "Nomi",
+      template: "Shablon",
+      workingHours: "Ish vaqti",
+      mapLabel: "Xarita",
+      notProvided: "Kiritilmagan",
+      connected: "Ulangan",
+      guestNotice:
+        "Siz guest sessiyada ishlayapsiz. Telegram yoki Google orqali kirib profilingizni akkauntga biriktirishingiz mumkin.",
+      claimTitle: "Profilingizni claim qiling",
+      claimDescription:
+        "Telegram yoki Google orqali kirib, hozirgi guest profilingizni shaxsiy akkauntga bog'lash oqimiga tayyor turing.",
+      claimBadge: "Claim uchun tayyor link",
     },
   },
   en: {
@@ -459,6 +548,17 @@ export const translations: Record<Locale, TranslationDictionary> = {
       sampleRole: "UX Designer · Tashkent",
       sampleButtons: ["Contact", "Portfolio", "Telegram"],
       yourLink: "Your link",
+      telegramOpening: "Preparing your Telegram auth flow...",
+      telegramError: "We could not open the Telegram auth flow. Please try again.",
+      telegramCta: "Open Telegram bot",
+    },
+    authCallback: {
+      loadingTitle: "Confirming Telegram sign-in",
+      loadingDescription:
+        "We are validating the authorization payload and preparing your session.",
+      errorTitle: "Telegram sign-in failed",
+      genericError: "Something went wrong while signing in with Telegram.",
+      retry: "Back to auth",
     },
     onboarding: {
       progressStep: "Step {step} of {total}",
@@ -505,6 +605,42 @@ export const translations: Record<Locale, TranslationDictionary> = {
       successTitle: "Congratulations!",
       successDescription: "Your page is ready. Now you can edit and manage it in the dashboard.",
       dashboard: "Go to dashboard",
+      loadingProfile: "Loading your saved profile...",
+      saving: "Saving...",
+      saveError: "We could not save your profile. Please try again.",
+    },
+    dashboardPage: {
+      title: "Dashboard",
+      description:
+        "Review your page status, jump back into onboarding, and keep your profile ready to be claimed by a real account later.",
+      loading: "Loading dashboard...",
+      loadError: "We could not load your dashboard right now.",
+      errorTitle: "Dashboard is unavailable",
+      retry: "Try again",
+      emptyTitle: "No profile found yet",
+      emptyDescription:
+        "Complete onboarding first and your saved profile will appear here.",
+      startAction: "Start onboarding",
+      editAction: "Edit onboarding",
+      claimAction: "Claim template/account",
+      summaryTitle: "Quick summary",
+      profileTitle: "Profile details",
+      platforms: "Platforms",
+      phones: "Phones",
+      socials: "Socials",
+      websites: "Websites",
+      name: "Name",
+      template: "Template",
+      workingHours: "Working hours",
+      mapLabel: "Map",
+      notProvided: "Not provided",
+      connected: "Connected",
+      guestNotice:
+        "You are using a guest session. Connect Telegram or Google later to claim this profile.",
+      claimTitle: "Claim your profile",
+      claimDescription:
+        "Sign in with Telegram or Google to attach the current guest profile to a real account when auth is enabled.",
+      claimBadge: "Link ready to claim",
     },
   },
   ru: {
@@ -643,6 +779,17 @@ export const translations: Record<Locale, TranslationDictionary> = {
       sampleRole: "UX Дизайнер · Ташкент",
       sampleButtons: ["Связаться", "Портфолио", "Telegram"],
       yourLink: "Ваша ссылка",
+      telegramOpening: "Подготавливаем окно авторизации Telegram...",
+      telegramError: "Не удалось открыть Telegram авторизацию. Попробуйте еще раз.",
+      telegramCta: "Открыть Telegram бота",
+    },
+    authCallback: {
+      loadingTitle: "Подтверждаем вход через Telegram",
+      loadingDescription:
+        "Проверяем данные авторизации и подготавливаем вашу сессию.",
+      errorTitle: "Вход через Telegram не завершен",
+      genericError: "Во время входа через Telegram произошла ошибка.",
+      retry: "Вернуться к авторизации",
     },
     onboarding: {
       progressStep: "Шаг {step} из {total}",
@@ -689,6 +836,42 @@ export const translations: Record<Locale, TranslationDictionary> = {
       successTitle: "Поздравляем!",
       successDescription: "Ваша страница готова. Теперь вы можете редактировать и управлять ей в панели управления.",
       dashboard: "Перейти в дашборд",
+      loadingProfile: "Загружаем сохраненный профиль...",
+      saving: "Сохраняем...",
+      saveError: "Не удалось сохранить профиль. Попробуйте еще раз.",
+    },
+    dashboardPage: {
+      title: "Дашборд",
+      description:
+        "Здесь вы видите состояние страницы, можете вернуться к onboarding и подготовить профиль к привязке к аккаунту.",
+      loading: "Загружаем дашборд...",
+      loadError: "Не удалось загрузить данные дашборда.",
+      errorTitle: "Дашборд недоступен",
+      retry: "Повторить",
+      emptyTitle: "Профиль пока не найден",
+      emptyDescription:
+        "Сначала завершите onboarding, и затем здесь появится ваш сохраненный профиль.",
+      startAction: "Начать onboarding",
+      editAction: "Редактировать onboarding",
+      claimAction: "Привязать шаблон и аккаунт",
+      summaryTitle: "Краткая сводка",
+      profileTitle: "Данные профиля",
+      platforms: "Платформы",
+      phones: "Телефоны",
+      socials: "Соцсети",
+      websites: "Сайты",
+      name: "Название",
+      template: "Шаблон",
+      workingHours: "Часы работы",
+      mapLabel: "Карта",
+      notProvided: "Не указано",
+      connected: "Подключено",
+      guestNotice:
+        "Сейчас вы используете гостевую сессию. Позже можно будет войти через Telegram или Google и привязать этот профиль.",
+      claimTitle: "Привяжите профиль",
+      claimDescription:
+        "Войдите через Telegram или Google, чтобы позже прикрепить текущий гостевой профиль к реальному аккаунту.",
+      claimBadge: "Ссылка готова к привязке",
     },
   },
 };

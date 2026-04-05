@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useState, useCallback, useRef } from "react";
+import React, { useState, useCallback, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Icons } from "@/components/icons";
 import {
   INITIAL_DATA,
   OnboardingData,
-  TEMPLATE_NAMES,
   toSlug,
 } from "@/components/onboarding/utils";
 import { PreviewCard } from "@/components/onboarding/preview-card";
@@ -24,30 +24,60 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { LogOut, PlusIcon, Trash2Icon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { LayoutContainer } from "@/components/layout-container";
+import {
+  completeOnboarding,
+  getOnboardingDraft,
+  getTemplates,
+  saveOnboardingStep,
+  uploadMedia,
+} from "@/lib/api";
+import {
+  persistOnboardingDraft,
+  readOnboardingDraft,
+} from "@/lib/onboarding-draft-storage";
+import type {
+  BasicStepPayload,
+  ContactsStepPayload,
+  OnboardingStepId,
+  PlatformsStepPayload,
+  ProfileDraftDTO,
+  SocialsStepPayload,
+  SourceStepPayload,
+  TemplateDTO,
+  TemplateStepPayload,
+} from "@/lib/profile";
 
 const Step3 = ({
+  templates,
   data,
   onChange,
   onSelect,
 }: {
+  templates: TemplateDTO[];
   data: OnboardingData;
   onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
-  onSelect?: () => void;
+  onSelect?: (nextData: OnboardingData) => void;
 }) => {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-      {TEMPLATE_NAMES.map((name) => {
-        const selected = data.template === name;
+      {templates.map((template) => {
+        const selected = data.templateId === template.id;
 
         return (
           <TemplateCard
-            key={name}
-            templateName={name}
+            key={template.id}
+            templateName={template.name}
             data={data}
             selected={selected}
             onClick={() => {
-              onChange("template", name);
-              onSelect?.();
+              const nextData = {
+                ...data,
+                template: template.name,
+                templateId: template.id,
+              };
+              onChange("template", template.name);
+              onChange("templateId", template.id);
+              onSelect?.(nextData);
             }}
           />
         );
@@ -57,21 +87,26 @@ const Step3 = ({
 };
 
 const Step4 = ({
+  isUploading,
   data,
   onChange,
+  onUpload,
+  onRemoveLogo,
 }: {
+  isUploading: boolean;
   data: OnboardingData;
-  onChange: (key: keyof OnboardingData, value: string | null) => void;
+  onChange: <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => void;
+  onUpload: (file: File) => Promise<void>;
+  onRemoveLogo: () => void;
 }) => {
   const { t } = useI18n();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => onChange("logo", reader.result as string);
-    reader.readAsDataURL(file);
+    await onUpload(file);
+    e.target.value = "";
   };
 
   return (
@@ -98,7 +133,7 @@ const Step4 = ({
                   <Icons.UploadIcon />
                 </div>
                 <p className="text-[13px] font-medium text-zinc-500">
-                  {t.onboarding.uploadClick}
+                  {isUploading ? t.onboarding.saving : t.onboarding.uploadClick}
                 </p>
                 <p className="text-[11px] text-zinc-400 mt-1">
                   {t.onboarding.uploadHint}
@@ -115,7 +150,7 @@ const Step4 = ({
           />
           {data.logo && (
             <button
-              onClick={() => onChange("logo", null)}
+              onClick={onRemoveLogo}
               className="mt-2 text-[12px] text-zinc-400 hover:text-red-500 transition-colors"
             >
 {t.onboarding.remove}
@@ -468,12 +503,177 @@ const Step6 = ({
   );
 };
 
-const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
+const OnboardingWizard = () => {
   const router = useRouter();
   const { t } = useI18n();
+  const queryClient = useQueryClient();
   const [step, setStep] = useState(1);
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState<OnboardingData>(INITIAL_DATA);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [hasHydratedLocalDraft, setHasHydratedLocalDraft] = useState(false);
+  const [isFinalizing, setIsFinalizing] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [hasPendingChanges, setHasPendingChanges] = useState(false);
+  const pendingSaveQueueRef = useRef(
+    new Map<OnboardingStepId, OnboardingData>(),
+  );
+  const flushPromiseRef = useRef<Promise<void> | null>(null);
+  const dataRef = useRef(data);
+  const pendingLogoFileRef = useRef<File | null>(null);
+  const pendingLogoPreviewUrlRef = useRef<string | null>(null);
+  const pendingLogoKeyRef = useRef<string | null>(null);
+
+  const mapProfileToData = useCallback((profile: ProfileDraftDTO): OnboardingData => {
+    return {
+      source: profile.source,
+      platforms: profile.platforms,
+      template: profile.template,
+      templateId: profile.templateId,
+      logo: profile.logo,
+      logoMediaId: profile.logoMediaId,
+      title: profile.title,
+      description: profile.description,
+      socials: profile.socials,
+      websites: profile.websites,
+      workHours: profile.workHours,
+      phones: profile.phones,
+      googleMaps: profile.googleMaps,
+    };
+  }, []);
+
+  const mergeDraftData = useCallback(
+    (base: OnboardingData, local: Partial<OnboardingData> | null): OnboardingData => {
+      if (!local) {
+        return base;
+      }
+
+      return {
+        ...base,
+        source: local.source?.trim() ? local.source : base.source,
+        platforms: local.platforms?.length ? local.platforms : base.platforms,
+        template: local.template?.trim() ? local.template : base.template,
+        templateId: local.templateId?.trim() ? local.templateId : base.templateId,
+        logo: local.logo ?? base.logo,
+        logoMediaId: local.logoMediaId ?? base.logoMediaId,
+        title: local.title?.trim() ? local.title : base.title,
+        description:
+          typeof local.description === "string" && local.description.length > 0
+            ? local.description
+            : base.description,
+        socials:
+          local.socials && Object.keys(local.socials).length > 0
+            ? local.socials
+            : base.socials,
+        websites:
+          local.websites && local.websites.length > 0
+            ? local.websites
+            : base.websites,
+        workHours:
+          typeof local.workHours === "string" && local.workHours.length > 0
+            ? local.workHours
+            : base.workHours,
+        phones: local.phones?.length ? local.phones : base.phones,
+        googleMaps:
+          typeof local.googleMaps === "string" && local.googleMaps.length > 0
+            ? local.googleMaps
+            : base.googleMaps,
+      };
+    },
+    [],
+  );
+
+  useEffect(() => {
+    dataRef.current = data;
+  }, [data]);
+
+  useEffect(() => {
+    return () => {
+      if (pendingLogoPreviewUrlRef.current) {
+        URL.revokeObjectURL(pendingLogoPreviewUrlRef.current);
+      }
+    };
+  }, []);
+
+  const templatesQuery = useQuery({
+    queryKey: ["templates"],
+    queryFn: getTemplates,
+  });
+
+  const onboardingDraftQuery = useQuery({
+    queryKey: ["onboarding-draft"],
+    queryFn: getOnboardingDraft,
+  });
+
+  useEffect(() => {
+    if (hasHydratedLocalDraft) {
+      return;
+    }
+
+    const localDraft = readOnboardingDraft();
+
+    if (localDraft) {
+      setData((current) => mergeDraftData(current, localDraft));
+    }
+
+    setHasHydratedLocalDraft(true);
+  }, [hasHydratedLocalDraft, mergeDraftData]);
+
+  useEffect(() => {
+    if (!hasHydratedLocalDraft || !onboardingDraftQuery.data) {
+      return;
+    }
+
+    const apiDraft = mapProfileToData(onboardingDraftQuery.data);
+    const localDraft = readOnboardingDraft();
+    const mergedDraft = mergeDraftData(apiDraft, localDraft);
+
+    setData(mergedDraft);
+    persistOnboardingDraft(mergedDraft);
+  }, [
+    hasHydratedLocalDraft,
+    mapProfileToData,
+    mergeDraftData,
+    onboardingDraftQuery.data,
+  ]);
+
+  useEffect(() => {
+    if (!hasHydratedLocalDraft) {
+      return;
+    }
+
+    persistOnboardingDraft(data);
+  }, [data, hasHydratedLocalDraft]);
+
+  const stepMutation = useMutation({
+    mutationFn: async (params: {
+      stepId: OnboardingStepId;
+      payload:
+        | SourceStepPayload
+        | PlatformsStepPayload
+        | TemplateStepPayload
+        | BasicStepPayload
+        | SocialsStepPayload
+        | ContactsStepPayload;
+    }) => saveOnboardingStep(params.stepId, params.payload),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(["onboarding-draft"], profile);
+      queryClient.setQueryData(["profile"], profile);
+    },
+  });
+
+  const completeMutation = useMutation({
+    mutationFn: completeOnboarding,
+    onSuccess: (profile) => {
+      queryClient.setQueryData(["onboarding-draft"], profile);
+      queryClient.setQueryData(["profile"], profile);
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] });
+    },
+  });
+
+  const mediaMutation = useMutation({
+    mutationFn: uploadMedia,
+  });
 
   const update = useCallback(
     <K extends keyof OnboardingData>(key: K, value: OnboardingData[K]) => {
@@ -482,19 +682,238 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
     [],
   );
 
+  const getStepPayload = useCallback(
+    (
+      currentStep: number,
+      currentData: OnboardingData,
+    ):
+      | SourceStepPayload
+      | PlatformsStepPayload
+      | TemplateStepPayload
+      | BasicStepPayload
+      | SocialsStepPayload
+      | ContactsStepPayload => {
+      if (currentStep === 1) {
+        return { source: currentData.source };
+      }
+
+      if (currentStep === 2) {
+        return { platforms: currentData.platforms };
+      }
+
+      if (currentStep === 3) {
+        return { templateId: currentData.templateId || null };
+      }
+
+      if (currentStep === 4) {
+        return {
+          title: currentData.title,
+          description: currentData.description,
+          logoMediaId: currentData.logoMediaId,
+        };
+      }
+
+      if (currentStep === 5) {
+        return {
+          socials: currentData.socials,
+          websites: currentData.websites,
+        };
+      }
+
+      return {
+        workHours: currentData.workHours,
+        phones: currentData.phones,
+        googleMaps: currentData.googleMaps,
+      };
+    },
+    [],
+  );
+
+  const getStepId = useCallback((currentStep: number): OnboardingStepId => {
+    if (currentStep === 1) return "source";
+    if (currentStep === 2) return "platforms";
+    if (currentStep === 3) return "template";
+    if (currentStep === 4) return "basic";
+    if (currentStep === 5) return "socials";
+    return "contacts";
+  }, []);
+
+  const getStepIndexFromStepId = useCallback((stepId: OnboardingStepId) => {
+    if (stepId === "source") return 1;
+    if (stepId === "platforms") return 2;
+    if (stepId === "template") return 3;
+    if (stepId === "basic") return 4;
+    if (stepId === "socials") return 5;
+    return 6;
+  }, []);
+
+  const applyUploadedLogo = useCallback((uploadedMedia: { id: string; url: string }) => {
+    if (pendingLogoPreviewUrlRef.current) {
+      URL.revokeObjectURL(pendingLogoPreviewUrlRef.current);
+      pendingLogoPreviewUrlRef.current = null;
+    }
+
+    pendingLogoFileRef.current = null;
+    pendingLogoKeyRef.current = null;
+
+    setData((prev) => {
+      const nextData = {
+        ...prev,
+        logo: uploadedMedia.url,
+        logoMediaId: uploadedMedia.id,
+      };
+      persistOnboardingDraft(nextData);
+      return nextData;
+    });
+  }, []);
+
+  const ensureUploadedLogo = useCallback(
+    async (currentData: OnboardingData) => {
+      const pendingFile = pendingLogoFileRef.current;
+
+      if (!pendingFile) {
+        return currentData;
+      }
+
+      const uploadKey = pendingLogoKeyRef.current;
+      const media = await mediaMutation.mutateAsync(pendingFile);
+
+      if (pendingLogoKeyRef.current === uploadKey) {
+        applyUploadedLogo(media);
+      }
+
+      return {
+        ...currentData,
+        logo: media.url,
+        logoMediaId: media.id,
+      };
+    },
+    [applyUploadedLogo, mediaMutation],
+  );
+
+  const flushQueuedSaves = useCallback(async () => {
+    if (flushPromiseRef.current) {
+      return flushPromiseRef.current;
+    }
+
+    flushPromiseRef.current = (async () => {
+      if (!pendingSaveQueueRef.current.size) {
+        setHasPendingChanges(Boolean(pendingLogoFileRef.current));
+        return;
+      }
+
+      setIsSyncing(true);
+
+      try {
+        while (pendingSaveQueueRef.current.size) {
+          const nextEntry = pendingSaveQueueRef.current.entries().next().value as
+            | [OnboardingStepId, OnboardingData]
+            | undefined;
+
+          if (!nextEntry) {
+            break;
+          }
+
+          const [stepId, snapshot] = nextEntry;
+          pendingSaveQueueRef.current.delete(stepId);
+
+          let nextSnapshot = snapshot;
+
+          if (stepId === "basic") {
+            nextSnapshot = await ensureUploadedLogo(snapshot);
+          }
+
+          await stepMutation.mutateAsync({
+            stepId,
+            payload: getStepPayload(
+              getStepIndexFromStepId(stepId),
+              nextSnapshot,
+            ),
+          });
+        }
+
+        setHasPendingChanges(Boolean(pendingLogoFileRef.current));
+      } catch (error) {
+        setSubmitError(
+          error instanceof Error ? error.message : t.onboarding.saveError,
+        );
+        setHasPendingChanges(
+          Boolean(pendingSaveQueueRef.current.size || pendingLogoFileRef.current),
+        );
+        throw error;
+      } finally {
+        setIsSyncing(false);
+        flushPromiseRef.current = null;
+      }
+    })();
+
+    return flushPromiseRef.current;
+  }, [
+    ensureUploadedLogo,
+    getStepIndexFromStepId,
+    getStepPayload,
+    stepMutation,
+    t.onboarding.saveError,
+  ]);
+
+  const enqueueStepPersist = useCallback(
+    (currentStep: number, currentData: OnboardingData) => {
+      const stepId = getStepId(currentStep);
+
+      if (pendingSaveQueueRef.current.has(stepId)) {
+        pendingSaveQueueRef.current.delete(stepId);
+      }
+
+      pendingSaveQueueRef.current.set(stepId, currentData);
+      setHasPendingChanges(true);
+      void flushQueuedSaves();
+    },
+    [flushQueuedSaves, getStepId],
+  );
+
   const canNext = () => {
     if (step === 1) return !!data.source;
     if (step === 2) return data.platforms.length > 0;
-    if (step === 3) return !!data.template;
+    if (step === 3) return !!data.templateId;
     if (step === 4) return !!data.title.trim();
     return true;
   };
 
-  const goNext = () => {
+  const goNext = async () => {
+    if (isFinalizing) return;
+    setSubmitError(null);
+
+    enqueueStepPersist(step, dataRef.current);
+
     if (step < 6) {
       setDirection(1);
       setStep((s) => s + 1);
-    } else onFinish();
+      return;
+    }
+
+    try {
+      setIsFinalizing(true);
+      await flushQueuedSaves();
+      await completeMutation.mutateAsync();
+      router.push("/dashboard");
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error ? error.message : t.onboarding.saveError,
+      );
+    } finally {
+      setIsFinalizing(false);
+    }
+  };
+
+  const skipStep = async () => {
+    if (step >= 6 || isFinalizing) {
+      return;
+    }
+
+    setSubmitError(null);
+    enqueueStepPersist(step, dataRef.current);
+    setDirection(1);
+    setStep((current) => current + 1);
   };
 
   const goPrev = () => {
@@ -504,15 +923,84 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
     }
   };
 
-  const handleSingleSelectStep = (targetStep: number) => {
+  const handleSingleSelectStep = (
+    targetStep: number,
+    currentData: OnboardingData,
+  ) => {
     if (step !== targetStep) return;
+
+    setSubmitError(null);
+    enqueueStepPersist(targetStep, currentData);
     setDirection(1);
     setStep((current) => (current < 6 ? current + 1 : current));
   };
 
+  const handleLogoUpload = useCallback(
+    async (file: File) => {
+      setSubmitError(null);
+
+      const previewUrl = URL.createObjectURL(file);
+
+      if (pendingLogoPreviewUrlRef.current) {
+        URL.revokeObjectURL(pendingLogoPreviewUrlRef.current);
+      }
+
+      pendingLogoPreviewUrlRef.current = previewUrl;
+      pendingLogoFileRef.current = file;
+      pendingLogoKeyRef.current = `${file.name}-${file.size}-${file.lastModified}`;
+      setHasPendingChanges(true);
+      setData((prev) => ({
+        ...prev,
+        logo: previewUrl,
+        logoMediaId: null,
+      }));
+    },
+    [],
+  );
+
+  const handleRemoveLogo = useCallback(() => {
+    if (pendingLogoPreviewUrlRef.current) {
+      URL.revokeObjectURL(pendingLogoPreviewUrlRef.current);
+      pendingLogoPreviewUrlRef.current = null;
+    }
+
+    pendingLogoFileRef.current = null;
+    pendingLogoKeyRef.current = null;
+    setHasPendingChanges(true);
+    setData((prev) => ({
+      ...prev,
+      logo: null,
+      logoMediaId: null,
+    }));
+  }, []);
+
   const STEPS = t.onboarding.steps;
   const progress = (step / 6) * 100;
   const currentStep = STEPS[step - 1];
+  const isHydrating =
+    templatesQuery.isLoading || onboardingDraftQuery.isLoading;
+  const isSubmitting = isFinalizing || completeMutation.isPending;
+  const backgroundStatusLabel = useMemo(() => {
+    if (isFinalizing) {
+      return t.onboarding.saving;
+    }
+
+    if (mediaMutation.isPending || isSyncing) {
+      return "Background save...";
+    }
+
+    if (hasPendingChanges) {
+      return "Waiting to sync...";
+    }
+
+    return "All changes saved";
+  }, [
+    hasPendingChanges,
+    isFinalizing,
+    isSyncing,
+    mediaMutation.isPending,
+    t.onboarding.saving,
+  ]);
 
   const variants = {
     enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 40 : -40 }),
@@ -586,6 +1074,14 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
 
       {/* Content */}
       <LayoutContainer className="flex-1 flex flex-col py-4">
+        {isHydrating ? (
+          <div className="flex flex-1 items-center justify-center">
+            <div className="rounded-[28px] border border-zinc-200 bg-white px-8 py-6 text-sm text-zinc-500 shadow-sm">
+              {t.onboarding.loadingProfile}
+            </div>
+          </div>
+        ) : (
+          <>
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={`header-${step}`}
@@ -603,7 +1099,7 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
               </div>
               {step < 6 && (
                 <button
-                  onClick={goNext}
+                  onClick={skipStep}
                   className="px-3 py-2 rounded-xl text-[13px] font-medium text-zinc-400 hover:text-zinc-600 transition-colors"
                 >
                   {t.onboarding.skip}
@@ -635,8 +1131,9 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
               <Step1
                 data={data}
                 onChange={(k, v) => {
+                  const nextData = { ...data, [k]: v };
                   update(k, v as string);
-                  handleSingleSelectStep(1);
+                  handleSingleSelectStep(1, nextData);
                 }}
                 options={t.onboarding.step1Options}
               />
@@ -650,15 +1147,19 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
             )}
             {step === 3 && (
               <Step3
+                templates={templatesQuery.data || []}
                 data={data}
                 onChange={(k, v) => update(k, v)}
-                onSelect={() => handleSingleSelectStep(3)}
+                onSelect={(nextData) => handleSingleSelectStep(3, nextData)}
               />
             )}
             {step === 4 && (
               <Step4
+                isUploading={mediaMutation.isPending || !!pendingLogoFileRef.current}
                 data={data}
-                onChange={(k, v) => update(k, v as string | null)}
+                onChange={update}
+                onUpload={handleLogoUpload}
+                onRemoveLogo={handleRemoveLogo}
               />
             )}
             {step === 5 && (
@@ -673,10 +1174,20 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
           </motion.div>
         </AnimatePresence>
 
+        {submitError && (
+          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {submitError}
+          </div>
+        )}
+
+        <div className="mt-4 text-xs font-medium text-zinc-400">
+          {backgroundStatusLabel}
+        </div>
+
         <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between pt-8 mt-8 border-t border-zinc-100">
           <button
             onClick={goPrev}
-            disabled={step === 1}
+            disabled={step === 1 || isSubmitting}
             className="w-full sm:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl border border-zinc-200 text-[14px] font-semibold text-zinc-600 hover:bg-zinc-50 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
           >
             <Icons.ArrowLeft />
@@ -686,77 +1197,24 @@ const OnboardingWizard = ({ onFinish }: { onFinish: () => void }) => {
           <div className="w-full sm:w-auto flex items-center gap-2">
             <button
               onClick={goNext}
-              disabled={!canNext()}
+              disabled={!canNext() || isSubmitting}
               className="w-full sm:w-auto px-6 py-3 bg-zinc-900 text-white text-[14px] font-bold rounded-2xl shadow-lg shadow-zinc-900/15 hover:bg-zinc-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all hover:-translate-y-0.5 disabled:hover:translate-y-0"
             >
-              {step === 6 ? t.onboarding.finish : t.onboarding.continue}
+              {isSubmitting
+                ? t.onboarding.saving
+                : step === 6
+                  ? t.onboarding.finish
+                  : t.onboarding.continue}
             </button>
           </div>
         </div>
+          </>
+        )}
       </LayoutContainer>
     </div>
   );
 };
 
-const SuccessScreen = ({ onDashboard }: { onDashboard: () => void }) => {
-  const { t } = useI18n();
-  return (
-    <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="max-w-md w-full text-center"
-      >
-        <div className="mb-6">
-          <div className="w-16 h-16 mx-auto rounded-2xl bg-emerald-100 flex items-center justify-center text-3xl">
-            🎉
-          </div>
-        </div>
-        <h1 className="text-[32px] font-black text-zinc-900 mb-3">
-          {t.onboarding.successTitle}
-        </h1>
-        <p className="text-[15px] text-zinc-500 mb-8 leading-relaxed">
-          {t.onboarding.successDescription}
-        </p>
-        <button
-          onClick={onDashboard}
-          className="w-full px-6 py-3 bg-zinc-900 text-white text-[14px] font-bold rounded-2xl shadow-lg shadow-zinc-900/15 hover:bg-zinc-700 transition-all hover:-translate-y-0.5"
-        >
-          {t.onboarding.dashboard}
-        </button>
-      </motion.div>
-    </div>
-  );
-};
-
 export function OnboardingContainer() {
-  const [screen, setScreen] = useState<"onboarding" | "success">("onboarding");
-
-  return (
-    <AnimatePresence mode="wait">
-      {screen === "onboarding" && (
-        <motion.div
-          key="onboarding"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <OnboardingWizard onFinish={() => setScreen("success")} />
-        </motion.div>
-      )}
-      {screen === "success" && (
-        <motion.div
-          key="success"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-        >
-          <SuccessScreen onDashboard={() => setScreen("onboarding")} />
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
+  return <OnboardingWizard />;
 }

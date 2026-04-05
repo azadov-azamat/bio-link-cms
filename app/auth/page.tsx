@@ -1,13 +1,49 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { motion } from "framer-motion";
 import { Icons } from "@/components/icons";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useI18n } from "@/components/i18n-provider";
 
-export default function AuthPage() {
+const TELEGRAM_BOT_USERNAME =
+  process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME?.replace(/^@/, "") || "";
+
+function AuthPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { t } = useI18n();
+  const isClaimFlow = searchParams.get("screen") === "claim";
+  const [isTelegramOpening, setIsTelegramOpening] = useState(false);
+
+  const handleAuthRedirect = () => {
+    router.push(isClaimFlow ? "/dashboard" : "/onboarding");
+  };
+
+  const handleTelegramAuth = () => {
+    if (isTelegramOpening) {
+      return;
+    }
+
+    if (!TELEGRAM_BOT_USERNAME) {
+      window.alert(
+        "NEXT_PUBLIC_TELEGRAM_BOT_USERNAME is not configured on the frontend.",
+      );
+      return;
+    }
+
+    setIsTelegramOpening(true);
+    const telegramUrl = `https://t.me/${TELEGRAM_BOT_USERNAME}?start=login`;
+    const authWindow = window.open(telegramUrl, "_blank", "noopener,noreferrer");
+
+    if (!authWindow) {
+      window.location.href = telegramUrl;
+    }
+
+    window.setTimeout(() => {
+      setIsTelegramOpening(false);
+    }, 2500);
+  };
 
   return (
     <div className="min-h-screen bg-[#FAFAF9] flex">
@@ -41,40 +77,48 @@ export default function AuthPage() {
             className="text-[32px] font-black text-zinc-900 tracking-tight mb-2"
             style={{ fontFamily: "'Georgia', serif" }}
           >
-            {t.auth.title}
+            {isClaimFlow ? t.dashboardPage.claimTitle : t.auth.title}
           </h1>
           <p className="text-[15px] text-zinc-500 mb-8 leading-relaxed">
-            {t.auth.description}
+            {isClaimFlow ? t.dashboardPage.claimDescription : t.auth.description}
           </p>
 
           {/* OAuth Buttons */}
           <div className="space-y-3">
             {[
               {
+                key: "google",
                 icon: <Icons.GoogleIcon />,
                 label: t.auth.loginWithGoogle,
                 bg: "bg-white border border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50",
               },
               {
+                key: "facebook",
                 icon: <Icons.FacebookIconAuth />,
                 label: t.auth.loginWithFacebook,
                 bg: "bg-[#1877F2] hover:bg-[#166FE5] text-white border border-transparent",
               },
               {
+                key: "telegram",
                 icon: <Icons.TelegramIcon />,
                 label: t.auth.loginWithTelegram,
                 bg: "bg-[#2AABEE] hover:bg-[#239DD8] text-white border border-transparent",
               },
-            ].map(({ icon, label, bg }) => (
+            ].map(({ key, icon, label, bg }) => (
               <button
-                key={label}
-                onClick={() => router.push("/onboarding")}
+                key={key}
+                onClick={key === "telegram" ? handleTelegramAuth : handleAuthRedirect}
+                disabled={key === "telegram" && isTelegramOpening}
                 className={`w-full flex items-center gap-3 px-5 py-3.5 rounded-2xl text-[14px] font-semibold transition-all shadow-sm hover:shadow-md hover:-translate-y-0.5 ${bg}`}
               >
                 <span className="w-5 h-5 flex items-center justify-center shrink-0">
                   {icon}
                 </span>
-                <span className="flex-1 text-center">{label}</span>
+                <span className="flex-1 text-center">
+                  {key === "telegram" && isTelegramOpening
+                    ? t.auth.telegramOpening
+                    : label}
+                </span>
               </button>
             ))}
           </div>
@@ -146,7 +190,7 @@ export default function AuthPage() {
           </div>
           <div className="mt-6 bg-zinc-800 rounded-2xl px-5 py-3 inline-block">
             <p className="text-[12px] text-zinc-400 mb-0.5">
-              {t.auth.yourLink}
+              {isClaimFlow ? t.dashboardPage.claimBadge : t.auth.yourLink}
             </p>
             <p className="text-[14px] font-bold text-white">
               biosahifa.uz/aziza
@@ -155,5 +199,13 @@ export default function AuthPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={null}>
+      <AuthPageContent />
+    </Suspense>
   );
 }

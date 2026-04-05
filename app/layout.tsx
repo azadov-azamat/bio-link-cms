@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { I18nProvider } from '@/components/i18n-provider'
+import { QueryProvider } from '@/components/query-provider'
 
 
 export const metadata: Metadata = {
@@ -35,7 +36,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased">
-        <I18nProvider>{children}</I18nProvider>
+        <QueryProvider>
+          <I18nProvider>{children}</I18nProvider>
+        </QueryProvider>
         <Analytics />
       </body>
     </html>
