@@ -7,7 +7,7 @@ type LayoutContainerProps = {
 };
 
 const SIZE_CLASS_MAP: Record<NonNullable<LayoutContainerProps["size"]>, string> = {
-  default: "max-w-4xl",
+  default: "max-w-6xl",
   wide: "max-w-7xl",
   narrow: "max-w-3xl",
 };

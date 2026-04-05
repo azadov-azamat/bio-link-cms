@@ -262,22 +262,22 @@ export default function DashboardMySitesPage() {
       {
         label: "Platformalar",
         value: profile.platforms.length,
-        accent: "from-sky-500/15 to-cyan-500/5 text-sky-700",
+        accent: "bg-zinc-100 text-zinc-700",
       },
       {
         label: "Social linklar",
         value: countActiveSocials(profile),
-        accent: "from-emerald-500/15 to-lime-500/5 text-emerald-700",
+        accent: "bg-zinc-100 text-zinc-700",
       },
       {
         label: "Websaytlar",
         value: countActiveWebsites(profile),
-        accent: "from-fuchsia-500/15 to-pink-500/5 text-fuchsia-700",
+        accent: "bg-zinc-100 text-zinc-700",
       },
       {
         label: "Telefonlar",
         value: profile.phones.filter((item) => item.trim()).length,
-        accent: "from-amber-500/15 to-orange-500/5 text-amber-700",
+        accent: "bg-zinc-100 text-zinc-700",
       },
     ];
   }, [profile]);
@@ -353,177 +353,148 @@ export default function DashboardMySitesPage() {
     templates.find((item) => item.id === profile.templateId) ?? null;
 
   return (
-    <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_440px]">
-      <div className="space-y-6">
-        <section className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)]">
-          <div className="bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.24),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(56,189,248,0.18),_transparent_36%),linear-gradient(135deg,_#18181b_0%,_#27272a_100%)] px-8 py-10 text-white">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/70">
-              <LayoutTemplate className="h-3.5 w-3.5" />
-              My sites
-            </div>
-            <div className="mt-5 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <h1
-                  className="text-4xl font-black tracking-tight sm:text-5xl"
-                  style={{ fontFamily: "'Georgia', serif" }}
-                >
-                  Sayt studio
-                </h1>
-                <p className="mt-4 max-w-2xl text-sm leading-6 text-white/72 sm:text-base">
-                  Chap tomonda sahifangizning workspace kartasi, o‘ng tomonda esa
-                  live preview va inspector bor. Preview ichidagi belgilangan
-                  elementlarga bosib, joyida kerakli blokni o‘zgartira olasiz.
-                </p>
-              </div>
-
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/85">
-                <Sparkles className="h-4 w-4" />
-                1 ta aktiv site
-              </div>
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_480px]">
+      <div className="space-y-8">
+        <section className="space-y-4">
+          <div className="inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
+            <LayoutTemplate className="h-3.5 w-3.5" />
+            My sites
+          </div>
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <h1
+                className="text-5xl font-black tracking-tight text-zinc-900 sm:text-6xl"
+                style={{ fontFamily: "'Georgia', serif" }}
+              >
+                Sayt studio
+              </h1>
+              <p className="mt-4 max-w-2xl text-base leading-7 text-zinc-600">
+                Chap tomonda sahifangizning workspace kartasi, o'ng tomonda esa
+                live preview va inspector bor. Preview ichidagi belgilangan
+                elementlarga bosib, joyida kerakli blokni o'zgartira olasiz.
+              </p>
             </div>
           </div>
         </section>
 
-        <section className="grid gap-4 md:grid-cols-2 2xl:grid-cols-4">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map(({ label, value, accent }) => (
             <article
               key={label}
               className={cn(
-                "rounded-[28px] border border-zinc-200 bg-white p-5 shadow-sm",
+                "rounded-[24px] border border-zinc-200 bg-white p-6 shadow-sm transition hover:shadow-md",
               )}
             >
-              <div
-                className={cn(
-                  "inline-flex rounded-full bg-gradient-to-r px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]",
-                  accent,
-                )}
-              >
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-400">
                 {label}
-              </div>
-              <div className="mt-4 text-4xl font-black tracking-tight text-zinc-900">
+              </p>
+              <div className="mt-4 text-5xl font-black tracking-tight text-zinc-900">
                 {value}
               </div>
             </article>
           ))}
-        </section>
+        </div>
 
-        <section className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_300px]">
-          <article className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
-                  My sites
-                </p>
-                <h2 className="mt-2 text-2xl font-black tracking-tight text-zinc-900">
-                  Profil ro‘yxati
-                </h2>
-                <p className="mt-2 text-sm leading-6 text-zinc-500">
-                  Hozircha sizda bitta aktiv sahifa bor. Keyinchalik bu bo‘lim
-                  multi-site boshqaruviga aylanishi uchun tayyor.
-                </p>
+        <article className="rounded-[28px] border border-zinc-200 bg-white p-8 shadow-sm">
+          <div className="mb-6 flex items-start justify-between gap-4">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-400">
+                Active profile
+              </p>
+              <h2 className="mt-3 text-3xl font-black tracking-tight text-zinc-900">
+                Profil ro'yxati
+              </h2>
+            </div>
+            <button
+              onClick={() => router.push("/onboarding")}
+              className="inline-flex shrink-0 items-center gap-2 rounded-2xl border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50"
+            >
+              <ArrowUpRight className="h-4 w-4" />
+              Continue
+            </button>
+          </div>
+
+          <button className="w-full rounded-[28px] border border-zinc-200 bg-white p-6 text-left shadow-sm transition hover:shadow-md hover:border-zinc-300">
+            <div className="flex items-start gap-5">
+              <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-zinc-100 text-lg font-black text-zinc-700">
+                {profile.logo ? (
+                  <img
+                    src={profile.logo}
+                    alt={profile.title}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  profile.title[0]?.toUpperCase() || "B"
+                )}
               </div>
 
-              <button
-                onClick={() => router.push("/onboarding")}
-                className="inline-flex items-center gap-2 rounded-2xl border border-zinc-200 px-4 py-2 text-sm font-semibold text-zinc-700"
-              >
-                Continue onboarding
-                <ArrowUpRight className="h-4 w-4" />
-              </button>
-            </div>
-
-            <button className="mt-6 w-full rounded-[28px] border border-zinc-200 bg-[linear-gradient(180deg,_#ffffff,_#f6f7f8)] p-5 text-left shadow-[0_18px_50px_-40px_rgba(15,23,42,0.4)] transition hover:-translate-y-0.5">
-              <div className="flex items-start gap-4">
-                <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-zinc-100">
-                  {profile.logo ? (
-                    <img
-                      src={profile.logo}
-                      alt={profile.title}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-lg font-black text-zinc-700">
-                      {profile.title[0]?.toUpperCase() || "B"}
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="truncate text-lg font-bold text-zinc-900">
+                    {profile.title || "Untitled profile"}
+                  </h3>
+                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-700">
+                    {profile.status}
+                  </span>
+                  {dashboard.isGuest && (
+                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
+                      Guest
                     </span>
                   )}
                 </div>
-
-                <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="truncate text-lg font-bold text-zinc-900">
-                      {profile.title || "Untitled profile"}
-                    </h3>
-                    <span className="rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700">
-                      {profile.status}
-                    </span>
-                    {dashboard.isGuest && (
-                      <span className="rounded-full bg-amber-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-amber-700">
-                        Guest
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-2 text-sm text-zinc-500">{publicLink}</p>
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
-                      {profile.template}
-                    </span>
-                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
-                      {countActiveSocials(profile)} socials
-                    </span>
-                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
-                      {profile.platforms.length} platforms
-                    </span>
-                  </div>
+                <p className="mt-2 text-sm font-medium text-zinc-500">{publicLink}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <span className="rounded-full bg-zinc-50 px-3 py-1 text-xs font-semibold text-zinc-600 border border-zinc-100">
+                    {profile.template}
+                  </span>
+                  <span className="rounded-full bg-zinc-50 px-3 py-1 text-xs font-semibold text-zinc-600 border border-zinc-100">
+                    {countActiveSocials(profile)} socials
+                  </span>
+                  <span className="rounded-full bg-zinc-50 px-3 py-1 text-xs font-semibold text-zinc-600 border border-zinc-100">
+                    {profile.platforms.length} platforms
+                  </span>
                 </div>
               </div>
-            </button>
-          </article>
+            </div>
+          </button>
 
-          <article className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
-              Public link
-            </p>
-            <div className="mt-3 rounded-[24px] bg-zinc-950 px-4 py-4 text-sm font-semibold text-white">
-              {publicLink}
-            </div>
-            <div className="mt-4 space-y-3">
-              <button
-                onClick={() => setSelectedField("title")}
-                className="flex w-full items-center justify-between rounded-2xl border border-zinc-200 px-4 py-3 text-left text-sm font-semibold text-zinc-700"
-              >
-                Preview studio
-                <ExternalLink className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => router.push("/auth?screen=claim")}
-                className="flex w-full items-center justify-between rounded-2xl border border-zinc-200 px-4 py-3 text-left text-sm font-semibold text-zinc-700"
-              >
-                Claim account
-                <ArrowUpRight className="h-4 w-4" />
-              </button>
-            </div>
-          </article>
-        </section>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <button
+              onClick={() => setSelectedField("title")}
+              className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white px-5 py-4 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50"
+            >
+              <span>Preview studio</span>
+              <ExternalLink className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => router.push("/auth?screen=claim")}
+              className="flex items-center justify-between rounded-2xl border border-zinc-200 bg-white px-5 py-4 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-50"
+            >
+              <span>Claim account</span>
+              <ArrowUpRight className="h-4 w-4" />
+            </button>
+          </div>
+        </article>
       </div>
 
-      <aside className="space-y-6 xl:sticky xl:top-6 xl:h-fit">
-        <section className="rounded-[32px] border border-zinc-200 bg-white p-5 shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)]">
-          <div className="flex items-center justify-between gap-3">
+      <aside className="space-y-6 lg:sticky lg:top-24 lg:h-fit">
+        <section className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
+          <div className="flex items-start justify-between gap-3 mb-5">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-zinc-400">
                 Live preview
               </p>
               <h2 className="mt-2 text-2xl font-black tracking-tight text-zinc-900">
-                Template inspector
+                Template
               </h2>
             </div>
-            <span className="rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-600">
+            <span className="rounded-full bg-zinc-100 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.22em] text-zinc-600">
               {currentTemplate?.name ?? profile.template}
             </span>
           </div>
 
-          <div className="mt-6 rounded-[30px] bg-[linear-gradient(180deg,_#f4f4f5,_#e7e5e4)] p-4">
-            <div className="mx-auto rounded-[34px] border border-zinc-300/70 bg-white/60 p-3 shadow-inner">
+          <div className="mt-6 rounded-[26px] bg-gradient-to-b from-zinc-100 to-zinc-50 p-5">
+            <div className="mx-auto rounded-[28px] border border-zinc-200 bg-white p-3 shadow-sm">
               <div className="relative mx-auto w-[292px]">
                 <TemplateCard
                   templateName={safeTemplateName}
@@ -563,7 +534,7 @@ export default function DashboardMySitesPage() {
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-3 gap-2">
+          <div className="mt-5 grid grid-cols-3 gap-2">
             {PREVIEW_TARGETS.map(({ id, label }) => (
               <button
                 key={id}
@@ -572,7 +543,7 @@ export default function DashboardMySitesPage() {
                   "rounded-2xl border px-3 py-2 text-xs font-semibold transition",
                   selectedField === id
                     ? "border-zinc-900 bg-zinc-900 text-white"
-                    : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300",
+                    : "border-zinc-200 bg-white text-zinc-600 hover:border-zinc-300 hover:bg-zinc-50",
                 )}
               >
                 {label}
@@ -581,7 +552,7 @@ export default function DashboardMySitesPage() {
           </div>
         </section>
 
-        <section className="rounded-[32px] border border-zinc-200 bg-white p-6 shadow-sm">
+        <section className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
@@ -597,7 +568,7 @@ export default function DashboardMySitesPage() {
             </div>
 
             {saveMutation.isSuccess && !saveMutation.isPending ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-700">
+              <span className="inline-flex items-center gap-1 rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-700">
                 <CheckCircle2 className="h-3.5 w-3.5" />
                 Saved
               </span>

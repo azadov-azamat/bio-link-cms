@@ -53,7 +53,7 @@ export default function DashboardAccountPage() {
 
       <section className="grid gap-4 lg:grid-cols-3">
         <article className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-700">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <p className="mt-5 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
@@ -70,7 +70,7 @@ export default function DashboardAccountPage() {
         </article>
 
         <article className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-50 text-sky-700">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-700">
             <Sparkles className="h-5 w-5" />
           </div>
           <p className="mt-5 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
@@ -85,17 +85,17 @@ export default function DashboardAccountPage() {
         </article>
 
         <article className="rounded-[28px] border border-zinc-200 bg-white p-6 shadow-sm">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-700">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-700">
             <UserRound className="h-5 w-5" />
           </div>
           <p className="mt-5 text-xs font-semibold uppercase tracking-[0.22em] text-zinc-400">
             Current site
           </p>
           <h2 className="mt-2 text-2xl font-black text-zinc-900">
-            {dashboard?.profile.title || "Profil hali yo‘q"}
+            {dashboard?.profile.title || "Profil hali yo'q"}
           </h2>
           <p className="mt-2 text-sm text-zinc-500">
-            Guest yoki OAuth user bo‘lsangiz ham dashboard’dagi aktiv sahifa shu
+            Guest yoki OAuth user bo'lsangiz ham dashboard'dagi aktiv sahifa shu
             hisoblanadi.
           </p>
         </article>
