@@ -262,22 +262,22 @@ export default function DashboardMySitesPage() {
       {
         label: "Platformalar",
         value: profile.platforms.length,
-        accent: "from-sky-500/15 to-cyan-500/5 text-sky-700",
+        accent: "bg-zinc-100 text-zinc-700",
       },
       {
         label: "Social linklar",
         value: countActiveSocials(profile),
-        accent: "from-emerald-500/15 to-lime-500/5 text-emerald-700",
+        accent: "bg-zinc-100 text-zinc-700",
       },
       {
         label: "Websaytlar",
         value: countActiveWebsites(profile),
-        accent: "from-fuchsia-500/15 to-pink-500/5 text-fuchsia-700",
+        accent: "bg-zinc-100 text-zinc-700",
       },
       {
         label: "Telefonlar",
         value: profile.phones.filter((item) => item.trim()).length,
-        accent: "from-amber-500/15 to-orange-500/5 text-amber-700",
+        accent: "bg-zinc-100 text-zinc-700",
       },
     ];
   }, [profile]);
@@ -355,31 +355,29 @@ export default function DashboardMySitesPage() {
   return (
     <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_440px]">
       <div className="space-y-6">
-        <section className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)]">
-          <div className="bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.24),_transparent_32%),radial-gradient(circle_at_top_right,_rgba(56,189,248,0.18),_transparent_36%),linear-gradient(135deg,_#18181b_0%,_#27272a_100%)] px-8 py-10 text-white">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-white/70">
-              <LayoutTemplate className="h-3.5 w-3.5" />
-              My sites
+        <section className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="flex-1">
+              <div className="inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-zinc-500">
+                <LayoutTemplate className="h-3.5 w-3.5" />
+                My sites
+              </div>
+              <h1
+                className="mt-4 text-4xl font-black tracking-tight text-zinc-900 sm:text-5xl"
+                style={{ fontFamily: "'Georgia', serif" }}
+              >
+                Sayt studio
+              </h1>
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base">
+                Chap tomonda sahifangizning workspace kartasi, o'ng tomonda esa
+                live preview va inspector bor. Preview ichidagi belgilangan
+                elementlarga bosib, joyida kerakli blokni o'zgartira olasiz.
+              </p>
             </div>
-            <div className="mt-5 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-              <div>
-                <h1
-                  className="text-4xl font-black tracking-tight sm:text-5xl"
-                  style={{ fontFamily: "'Georgia', serif" }}
-                >
-                  Sayt studio
-                </h1>
-                <p className="mt-4 max-w-2xl text-sm leading-6 text-white/72 sm:text-base">
-                  Chap tomonda sahifangizning workspace kartasi, o‘ng tomonda esa
-                  live preview va inspector bor. Preview ichidagi belgilangan
-                  elementlarga bosib, joyida kerakli blokni o‘zgartira olasiz.
-                </p>
-              </div>
 
-              <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/85">
-                <Sparkles className="h-4 w-4" />
-                1 ta aktiv site
-              </div>
+            <div className="inline-flex items-center gap-2 rounded-full bg-zinc-100 px-4 py-2 text-sm font-semibold text-zinc-700">
+              <Sparkles className="h-4 w-4" />
+              1 ta aktiv site
             </div>
           </div>
         </section>
@@ -394,7 +392,7 @@ export default function DashboardMySitesPage() {
             >
               <div
                 className={cn(
-                  "inline-flex rounded-full bg-gradient-to-r px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]",
+                  "inline-flex rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-[0.22em]",
                   accent,
                 )}
               >

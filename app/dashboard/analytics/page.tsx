@@ -3,24 +3,22 @@ import { BarChart3, Clock3, Sparkles } from "lucide-react";
 export default function DashboardAnalyticsPage() {
   return (
     <div className="space-y-6">
-      <section className="overflow-hidden rounded-[32px] border border-zinc-200 bg-white shadow-[0_24px_80px_-48px_rgba(15,23,42,0.45)]">
-        <div className="bg-[radial-gradient(circle_at_top_left,_rgba(14,165,233,0.16),_transparent_42%),linear-gradient(135deg,_#18181b_0%,_#27272a_100%)] px-8 py-10 text-white">
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-white/70">
-            <Clock3 className="h-3.5 w-3.5" />
-            Analytics
-          </div>
-          <h1
-            className="mt-4 text-4xl font-black tracking-tight sm:text-5xl"
-            style={{ fontFamily: "'Georgia', serif" }}
-          >
-            Coming soon
-          </h1>
-          <p className="mt-4 max-w-2xl text-sm leading-6 text-white/72 sm:text-base">
-            Bu bo‘limda tashriflar, bosilgan linklar, CTA samaradorligi va
-            auditoriya trendlarini ko‘rsatamiz. Hozircha studio va sayt preview
-            oqimini mukammallashtirishga fokus qilyapmiz.
-          </p>
+      <section className="rounded-[32px] border border-zinc-200 bg-white p-8 shadow-sm">
+        <div className="inline-flex items-center gap-2 rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-zinc-500">
+          <Clock3 className="h-3.5 w-3.5" />
+          Analytics
         </div>
+        <h1
+          className="mt-4 text-4xl font-black tracking-tight text-zinc-900 sm:text-5xl"
+          style={{ fontFamily: "'Georgia', serif" }}
+        >
+          Coming soon
+        </h1>
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-zinc-600 sm:text-base">
+          Bu bo'limda tashriflar, bosilgan linklar, CTA samaradorligi va
+          auditoriya trendlarini ko'rsatamiz. Hozircha studio va sayt preview
+          oqimini mukammallashtirishga fokus qilyapmiz.
+        </p>
       </section>
 
       <section className="grid gap-4 lg:grid-cols-3">
